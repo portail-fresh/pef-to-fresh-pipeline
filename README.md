@@ -17,7 +17,7 @@ The current implementation of the pipeline executes the following tasks:
 | -------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | 1        | Correct XML files by replacing or removing invalid special characters that prevent parsing with `lxml`                 | `correct_special_characters.py`          |
 | 2        | Correct XML files by replacing or removing invalid special characters, that do not prevent correct parsing             | `correct_special_characters_optional.py` |
-| 3        | Format `<collDate>` tags by parsing date text and adding a "date" attribute. Unused `<collDate>` elements are removed. | `process_collection_dates.py`            |
+| 3        | Format collection dates tags in order to follow a standard format | `process_collection_dates.py`            |
 
 
 More detailed description of each task is described in the `docs` folder.
@@ -97,12 +97,10 @@ Tasks should be added in the `tasks` list as tuples containing the function name
     ```
 
 2. **Prepare Input Data**  
-   Place the original DDI-XML files to be parsed in the designated input folder, without subfolders. This path is specified in the `configs/folders.yaml` file under the `original_ddi_folder` key.
+   Place the original XML files to be parsed in the designated input folder, without subfolders. This path is specified in the `configs/folders.yaml` file under the `original_ddi_folder` key.
 
-3. **Configure connection to NADA (optional)**  
-   Fill the `configs/api.txt` file with the proper connection information for the NADA instance, then change the file extension from `.txt` to `.yaml`.
 
-4. **Run the Pipeline**  
+3. **Run the Pipeline**  
    To execute the main pipeline, run:
    ```bash
    python main.py
