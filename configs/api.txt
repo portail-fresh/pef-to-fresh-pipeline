@@ -1,0 +1,2 @@
+nada-api-key: abcdefg1234567890
+nada-api-host: http://0.0.0.0:0000
