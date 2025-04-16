@@ -75,6 +75,7 @@ def run_pipeline():
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
         (process_collection_dates, {}),
+        (add_fresh_enrichment_namespace,{})
     ]
     
     current_input_folder = original_folder  # Start with the original folder
