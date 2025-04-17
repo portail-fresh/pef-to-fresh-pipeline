@@ -13,13 +13,13 @@ Each task is defined by a Python function which solves a specific issue in the o
 
 The current implementation of the pipeline executes the following tasks:
 
-| Task No. | Step      | Task                                                                                                       | Python Function                          |
-| -------- | --------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| 1        | PEF > PEF | Correct XML files by replacing or removing invalid special characters that prevent parsing with `lxml`     | `correct_special_characters.py`          |
-| 2        | PEF > PEF | Correct XML files by replacing or removing invalid special characters, that do not prevent correct parsing | `correct_special_characters_optional.py` |
-| 3        | PEF > PEF | Format collection dates tags in order to follow a standard format                                          | `process_collection_dates.py`            |
-| 4        | PEF > PEF+ | Add `fresh-enrichment` namespace to track custom elements                                        | `add_fresh_enrichment_namespace.py`            |
-| 5        | PEF > PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                        | `add_fresh_identifier.py`            |
+| Task No. | Step     | Task                                                                                                       | Python Function                          |
+| -------- | -------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| 1        | PEF>PEF  | Correct XML files by replacing or removing invalid special characters that prevent parsing with `lxml`     | `correct_special_characters.py`          |
+| 2        | PEF>PEF  | Correct XML files by replacing or removing invalid special characters, that do not prevent correct parsing | `correct_special_characters_optional.py` |
+| 3        | PEF>PEF  | Format collection dates tags in order to follow a standard format                                          | `process_collection_dates.py`            |
+| 4        | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
+| 5        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
 
 More detailed description of each task is described in the `docs` folder.
 
