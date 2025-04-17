@@ -14,3 +14,13 @@ def execute_xsl_transformation(xml_file, xsl_file):
     except Exception as e:
         logger.error(f"Errore nella trasformazione XSLT: {e}")
         raise
+    
+def get_xslt3_processor(xsl_file):
+    try:
+        with PySaxonProcessor(license=False) as proc:
+            xsltproc = proc.new_xslt30_processor()
+            xslt_exec = xsltproc.compile_stylesheet(stylesheet_file=xsl_file)
+            return xslt_exec
+    except Exception as e:
+        logger.error(f"Error in initiating processor XSLT: {e}")
+        raise

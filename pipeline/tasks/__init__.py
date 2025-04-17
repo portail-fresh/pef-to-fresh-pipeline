@@ -4,6 +4,7 @@ from .get_xml_files import get_xml_files
 from .process_collection_dates import process_collection_dates
 from .add_fresh_enrichment_namespace import add_fresh_enrichment_namespace
 from .add_fresh_identifier import add_fresh_identifier
+from .split_fr_en import split_fr_en
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -13,6 +14,7 @@ __all__ = [
     "get_xml_files",
     "process_collection_dates",
     "add_fresh_enrichment_namespace",
-    "add_fresh_identifier"
+    "add_fresh_identifier",
+    "split_fr_en"
 
 ]
