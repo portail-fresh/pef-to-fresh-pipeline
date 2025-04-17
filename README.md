@@ -13,12 +13,13 @@ Each task is defined by a Python function which solves a specific issue in the o
 
 The current implementation of the pipeline executes the following tasks:
 
-| Step No. | Task                                                                                                                   | Python Function                          |
-| -------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| 1        | Correct XML files by replacing or removing invalid special characters that prevent parsing with `lxml`                 | `correct_special_characters.py`          |
-| 2        | Correct XML files by replacing or removing invalid special characters, that do not prevent correct parsing             | `correct_special_characters_optional.py` |
-| 3        | Format collection dates tags in order to follow a standard format | `process_collection_dates.py`            |
-
+| Task No. | Step      | Task                                                                                                       | Python Function                          |
+| -------- | --------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| 1        | PEF > PEF | Correct XML files by replacing or removing invalid special characters that prevent parsing with `lxml`     | `correct_special_characters.py`          |
+| 2        | PEF > PEF | Correct XML files by replacing or removing invalid special characters, that do not prevent correct parsing | `correct_special_characters_optional.py` |
+| 3        | PEF > PEF | Format collection dates tags in order to follow a standard format                                          | `process_collection_dates.py`            |
+| 4        | PEF > PEF+ | Add `fresh-enrichment` namespace to track custom elements                                        | `add_fresh_enrichment_namespace.py`            |
+| 5        | PEF > PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                        | `add_fresh_identifier.py`            |
 
 More detailed description of each task is described in the `docs` folder.
 
@@ -118,6 +119,11 @@ Tasks should be added in the `tasks` list as tuples containing the function name
   `lxml` is a Python library for XML and HTML parsing that supports XPath and XSLT. This project uses `lxml` to process XML files. Library documentation:  
   [https://lxml.de/](https://lxml.de/)
 
+- **saxonche Library**  
+  `saxonche` is a Python library that provides a Python interface to SaxonC, enabling XML and XSLT processing capabilities. It is based on the Saxon-HE processor. Library documentation:  
+  [https://www.saxonica.com/saxon-c/index.xml](https://www.saxonica.com/saxon-c/index.xml)
+
 - **pipreqs Library**  
   The `pipreqs` library was used to automatically generate a `requirements.txt` file with the dependencies of the project:  
   [https://github.com/bndr/pipreqs](https://github.com/bndr/pipreqs)
+
