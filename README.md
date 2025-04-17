@@ -20,6 +20,7 @@ The current implementation of the pipeline executes the following tasks:
 | 3        | PEF>PEF  | Format collection dates tags in order to follow a standard format                                          | `process_collection_dates.py`            |
 | 4        | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
 | 5        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
+| 6        | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
 
 More detailed description of each task is described in the `docs` folder.
 
