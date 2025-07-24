@@ -1,107 +1,150 @@
 import os
 import datetime
+import logging
+import inspect
+from pathlib import Path
 from pipeline.utils.load_config import load_config
 from pipeline.tasks import *
-import logging
-import pandas as pd
 from pipeline.utils.logging import setup_logging
+from pipeline.utils.XmlChangelog import XmlChangelog  # Assicurati che il path sia corretto
+
 # Setup logging configuration
 setup_logging()
-
-# Create a logger for this module
 logger = logging.getLogger(__name__)
 
-def execute_task(task, xml_file, input_folder=None, output_folder=None, **kwargs):
+
+class PipelineContext:
+    """
+    Context object holding shared resources and paths
+    for the current pipeline run, including individual changelogs
+    for each XML file.
+    """
+    def __init__(self, run_dir: Path):
+        self.run_dir = run_dir
+        self.outputs_dir = run_dir / "outputs"
+        self.changelogs_dir = run_dir / "changelogs"
+
+        self.outputs_dir.mkdir(parents=True, exist_ok=True)
+        self.changelogs_dir.mkdir(parents=True, exist_ok=True)
+
+        # Will hold XmlChangelog instances per XML file
+        self.changelogs = {}
+
+    def get_run_dir(self):
+        return self.run_dir
+
+    def get_outputs_dir(self):
+        return self.outputs_dir
+
+    def get_changelogs_dir(self):
+        return self.changelogs_dir
+
+    def init_changelog_for_file(self, xml_file: str):
+        """
+        Initialize a changelog object for a given XML file if not already present.
+        """
+        if xml_file not in self.changelogs:
+            self.changelogs[xml_file] = XmlChangelog(
+                xml_file=xml_file,
+                log_dir=self.changelogs_dir
+            )
+
+    def get_changelog(self, xml_file: str):
+        """
+        Returns the changelog object for the given file.
+        """
+        return self.changelogs.get(xml_file, None)
+
+
+def execute_task(task, xml_file, input_folder=None, output_folder=None, context=None, **kwargs):
     """
     Executes a task function with the appropriate parameters based on its signature.
-    
-    Parameters:
-    - task (function): The task function to execute.
-    - xml_file (str): The XML file being processed.
-    - input_folder (str, optional): Folder path where the XML file is read from.
-    - output_folder (str, optional): Folder path where the XML file will be saved.
-    - **kwargs: Additional keyword arguments specific to the task.
+    Only passes arguments that the task function explicitly accepts.
     """
-    if 'input_folder' in task.__code__.co_varnames and 'output_folder' in task.__code__.co_varnames:
-        task(xml_file, input_folder=input_folder, output_folder=output_folder, **kwargs)
-    elif 'input_folder' in task.__code__.co_varnames:
-        task(xml_file, input_folder=input_folder, **kwargs)
-    elif 'output_folder' in task.__code__.co_varnames:
-        task(xml_file, output_folder=output_folder, **kwargs)
-    else:
-        task(xml_file, **kwargs)
+    sig = inspect.signature(task)
+    task_args = {}
+
+    if 'xml_file' in sig.parameters:
+        task_args['xml_file'] = xml_file
+    if 'input_folder' in sig.parameters:
+        task_args['input_folder'] = input_folder
+    if 'output_folder' in sig.parameters:
+        task_args['output_folder'] = output_folder
+    if 'context' in sig.parameters:
+        task_args['context'] = context
+
+    # Add any additional keyword arguments allowed by the task
+    for k, v in kwargs.items():
+        if k in sig.parameters:
+            task_args[k] = v
+
+    task(**task_args)
+
 
 def run_pipeline():
     """
     Executes the entire XML modification pipeline.
-
-    This function orchestrates the execution of multiple tasks in sequence, where each task
-    modifies XML files in a specified order. The pipeline processes XML files from a given 
-    input folder and outputs the results to dynamically generated subfolders based on the 
-    current date and time. A separate subfolder is created for each execution of the pipeline 
-    to ensure that results from different runs do not overlap.
-
-    Steps:
-    1. Load configuration settings from a YAML file.
-    2. Create a unique temporary folder based on the current date and time for storing 
-       the results of each task.
-    3. Sequentially execute each task from the task list, passing the appropriate folders 
-       (input and output) to the task function.
-    4. For each task that requires output, create an output folder inside the run's temporary 
-       folder.
-    5. The input folder for each task is updated to the output folder of the previous task 
-       if applicable.
-
-    Raises:
-    - Exception: If any task encounters an error during execution, it is raised to halt the 
-      pipeline.
     """
     logger.info("Starting XML Modification Flow")
-    
-    config = load_config("folders.yaml")
-    original_folder = config.get('original_ddi_folder')
-    temp_folder = config.get('temp_folder')
 
-    # Generate a datetime-based folder name for each pipeline run
+    # Load folder configuration
+    config = load_config("folders.yaml")
+    original_folder = config.get('input_files_folder')
+    runs_folder = config.get('runs_folder')
+
+    # Create a unique folder for this run
     datetime_str = "run" + datetime.datetime.now().strftime("-%Y%m%d-%H%M%S")
-    run_temp_folder = os.path.join(temp_folder, datetime_str)
-    os.makedirs(run_temp_folder, exist_ok=True)
-    
-    # Initialize error log
-    #error_log_path = os.path.join(run_temp_folder, "error_log.csv")
-    #error_records = []
-    
+    run_temp_folder = Path(runs_folder) / datetime_str
+    run_temp_folder.mkdir(parents=True, exist_ok=True)
+
+    # Initialize the pipeline context
+    context = PipelineContext(run_temp_folder)
+
     tasks = [
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
         (process_collection_dates, {}),
-        (add_fresh_enrichment_namespace,{}),
-        (add_fresh_identifier,{}),
-        (split_fr_en,{})
+        (add_fresh_enrichment_namespace, {}),
+        (add_fresh_identifier, {}),
+        #(split_fr_en, {})
     ]
-    
-    current_input_folder = original_folder  # Start with the original folder
+
+    current_input_folder = Path(original_folder)
+
     for idx, (task, kwargs) in enumerate(tasks):
-        task_name = "{}-{}".format(idx + 1, task.__name__)
-        current_output_folder = os.path.join(run_temp_folder, task_name) if 'output_folder' in task.__code__.co_varnames else None
-        
+        task_name = f"{idx + 1:02d}-{task.__name__}"
+
+        # Each task writes to its own subfolder inside outputs/
+        current_output_folder = (
+            context.get_outputs_dir() / task_name
+            if 'output_folder' in task.__code__.co_varnames
+            else None
+        )
+
         if current_output_folder:
-            os.makedirs(current_output_folder, exist_ok=True)
-        
+            current_output_folder.mkdir(parents=True, exist_ok=True)
+
         xml_files = get_xml_files(current_input_folder)
+
         for xml_file in xml_files:
-            execute_task(task, xml_file, input_folder=current_input_folder, output_folder=current_output_folder, **kwargs)
-            
-        
+            # Initialize changelog for this file
+            context.init_changelog_for_file(xml_file)
+
+            # Execute the task
+            execute_task(
+                task,
+                xml_file,
+                input_folder=current_input_folder,
+                output_folder=current_output_folder,
+                context=context,
+                **kwargs
+            )
+
+        # Update input folder for the next task
         if current_output_folder:
             current_input_folder = current_output_folder
-    
-    # Save errors to CSV if there are any
-    #if error_records:
-    #    df = pd.DataFrame(error_records)
-    #    df.to_csv(error_log_path, index=False)
-    #    logger.info("Errors logged to %s", error_log_path)
-    
+
+
     logger.info("Pipeline execution completed.")
 
 

@@ -4,9 +4,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"  # <-- set your real namespace URI here
+FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"
 
-def add_fresh_identifier(xml_file: str, input_folder: str, output_folder: str):
+def add_fresh_identifier(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
     Adds a <fresh:ID> element to the <Metadonnees> section of the XML file, 
     if it doesn't already exist. The value is built as 'FRESH-PEF<ID>'.
@@ -15,6 +15,7 @@ def add_fresh_identifier(xml_file: str, input_folder: str, output_folder: str):
         xml_file: The name of the XML file to modify.
         input_folder: Folder containing the XML file.
         output_folder: Folder to write the updated XML file.
+        context (optional): Shared context object containing changelog and other runtime data.
     
     Returns:
         Path to the updated XML file.
@@ -48,12 +49,18 @@ def add_fresh_identifier(xml_file: str, input_folder: str, output_folder: str):
         # Check if <fresh:ID> exists
         xpath_expr = f"{{{FRESH_NAMESPACE_URI}}}ID"
         fresh_id_elem = metadonnees.find(xpath_expr)
+
+        task_name = "add_fresh_identifier"
+        changelog = context.get_changelog(xml_file) if context else None
+
         if fresh_id_elem is None:
             # Create <fresh:ID> and append it
             fresh_elem = etree.Element(xpath_expr, nsmap=nsmap)
             fresh_elem.text = fresh_id_value
             metadonnees.append(fresh_elem)
             logger.info("Added <fresh:ID> with value: %s", fresh_id_value)
+            if changelog:
+                changelog.log_add(task_name, field="fresh:ID", new_value=fresh_id_value)
         else:
             logger.info("<fresh:ID> already exists, skipping addition.")
 

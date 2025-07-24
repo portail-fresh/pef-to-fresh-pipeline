@@ -4,35 +4,21 @@ from lxml import etree
 import dateutil.parser
 from datetime import datetime
 
-# Create a logger for this module
 logger = logging.getLogger(__name__)
 
-def process_collection_dates(xml_file: str, input_folder: str, output_folder: str):
+def process_collection_dates(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
-    Processes year elements in an XML file, converting them to a standard format and managing attributes based on specific conditions.
-
-    This function performs the following steps:
-    1. Parses the given XML file.
-    2. Identifies and processes specific year-related elements.
-    3. Converts recognized date formats into standardized four-digit years.
-    4. Removes elements containing predefined phrases indicating an ongoing collection.
-    5. Handles predefined mappings for unstructured date values.
-    6. Saves the transformed XML file to the specified output folder.
+    Processes year elements in an XML file and logs any transformations into a structured changelog.
 
     Args:
         xml_file (str): The name of the XML file to process.
         input_folder (str): The directory containing the XML file.
         output_folder (str): The directory where the processed XML file will be saved.
-
-    Raises:
-        ValueError: If an encountered date value cannot be parsed or mapped.
-        Exception: For any unexpected errors during processing.
+        context (PipelineContext, optional): Shared context object containing changelog and other runtime data.
     """
     try:
         logger.info("Processing collection years in XML file: %s", xml_file)
         file_path = join(input_folder, xml_file)
-
-        # Step 1: Parse the XML file
         tree = etree.parse(file_path)
         root = tree.getroot()
 
@@ -96,41 +82,40 @@ def process_collection_dates(xml_file: str, input_folder: str, output_folder: st
         def contains_any_substring(target_string, substrings):
             return any(sub.lower() in target_string.lower() for sub in substrings)
 
-        year_values = {}
+        task_name = "process_collection_dates"
+        changelog = context.get_changelog(xml_file) if context else None
+
         for element in YEAR_ELEMENTS:
             for el in root.xpath(f"//{element}"):
-                if el.text is not None:
-                    if contains_any_substring(el.text, COLL_ONGOING_TOKENS):
-                        el.getparent().remove(el)
-                        continue
-                    
-                    converted_year = parse_year(el.text)
+                if el.text is None:
+                    continue
+
+                original_text = el.text.strip()
+
+                if contains_any_substring(original_text, COLL_ONGOING_TOKENS):
+                    if changelog:
+                        changelog.log_delete(task_name, field=element, old_value=original_text)
+                    el.getparent().remove(el)
+                    continue
+
+                converted_year = parse_year(original_text)
+                if converted_year is None:
+                    converted_year = UNPARSED_DATES_DICT.get(original_text)
                     if converted_year is None:
-                        converted_year = UNPARSED_DATES_DICT.get(el.text, None)
-                        if converted_year is None:
-                            raise ValueError(f"Unrecognized date format: '{el.text}'. Unable to parse.")
-                    
+                        raise ValueError(f"Unrecognized date format: '{original_text}'")
+
+                if original_text != converted_year:
+                    if changelog:
+                        changelog.log_update(task_name, field=element, old_value=original_text, new_value=converted_year)
                     el.text = converted_year
-                    year_values[element] = converted_year
 
-        # Validate French and English dates match
-        #if year_values.get("AnneePremierRecueilFR") and year_values.get("AnneePremierRecueilEN"):
-        #    if year_values["AnneePremierRecueilFR"] != year_values["AnneePremierRecueilEN"]:
-        #        raise Exception(f"Mismatch: AnneePremierRecueilFR ({year_values['AnneePremierRecueilFR']}) != AnneePremierRecueilEN ({year_values['AnneePremierRecueilEN']})")
-        
-        #if year_values.get("AnneeDernierRecueilFR") and year_values.get("AnneeDernierRecueilEN"):
-        #    if year_values["AnneeDernierRecueilFR"] != year_values["AnneeDernierRecueilEN"]:
-        #        raise Exception(f"Mismatch: AnneeDernierRecueilFR ({year_values['AnneeDernierRecueilFR']}) != AnneeDernierRecueilEN ({year_values['AnneeDernierRecueilEN']})")
-
-        # Step 2: Save the updated XML file
         output_file_path = join(output_folder, xml_file)
         tree.write(output_file_path, encoding="UTF-8", xml_declaration=True, pretty_print=True)
         logger.info("Successfully processed and saved XML file: %s", output_file_path)
-    
+
     except ValueError as ve:
         logger.error("Date parsing error in file %s: %s", xml_file, ve)
         raise
     except Exception as e:
         logger.error("An unexpected error occurred while processing the file %s: %s", xml_file, e)
         raise
-
