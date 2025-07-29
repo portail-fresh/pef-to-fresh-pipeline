@@ -1,0 +1,24 @@
+{
+  "file_id_column": "ID",
+  "operations": [
+    {
+      "type": "update",
+      "from": {
+        "col": "Critères d'inclusion",
+        "xpath": "//CriteresInclusionFR"
+      },
+      "to": {
+        "col": "Critères d'inclusion(PUR)",
+        "xpath": "//CriteresInclusionFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "Critères d'exclusion",
+        "xpath": "//ExclusionCriteria"
+      }
+    }
+
+  ]
+}

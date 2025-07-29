@@ -4,6 +4,7 @@ from .get_xml_files import get_xml_files
 from .process_collection_dates import process_collection_dates
 from .add_fresh_enrichment_namespace import add_fresh_enrichment_namespace
 from .add_fresh_identifier import add_fresh_identifier
+from .process_inclusion_criteria import process_inclusion_criteria
 from .split_fr_en import split_fr_en
 
 
@@ -15,6 +16,7 @@ __all__ = [
     "process_collection_dates",
     "add_fresh_enrichment_namespace",
     "add_fresh_identifier",
+    "process_inclusion_criteria",
     "split_fr_en"
 
 ]

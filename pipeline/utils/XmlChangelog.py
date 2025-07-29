@@ -45,11 +45,11 @@ class XmlChangelog:
             f.write(f"\n==> Task: {task_name}\n")
 
     def log_add(self, task: str, field: str, new_value: str):
-        self._write_log_line(f"[{task}] Field '{field}' ADDED with value: {new_value}")
+        self._write_log_line(f"[{task}] Field '{field}' ADDED with value: \n{new_value}")
         self._write_csv_row(task, "add", field, "", new_value)
 
     def log_update(self, task: str, field: str, old_value: str, new_value: str):
-        self._write_log_line(f"[{task}] Field '{field}' UPDATED from: {old_value} to: {new_value}")
+        self._write_log_line(f"[{task}] Field '{field}' UPDATED \nfrom:\n {old_value} \nto:\n {new_value}")
         self._write_csv_row(task, "update", field, old_value, new_value)
 
     def log_delete(self, task: str, field: str, old_value: str = ""):

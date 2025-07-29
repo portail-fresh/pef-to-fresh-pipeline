@@ -106,6 +106,7 @@ def run_pipeline():
         (process_collection_dates, {}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
+        (process_inclusion_criteria, {}),
         (split_fr_en, {})
     ]
 
