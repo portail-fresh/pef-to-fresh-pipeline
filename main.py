@@ -106,7 +106,7 @@ def run_pipeline():
         (process_collection_dates, {}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
-        #(split_fr_en, {})
+        (split_fr_en, {})
     ]
 
     current_input_folder = Path(original_folder)
