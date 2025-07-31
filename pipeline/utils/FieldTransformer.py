@@ -11,19 +11,20 @@ from pipeline.utils.Changelog import Changelog
 class FieldTransformer:
     """
     Applies field-level transformations to an XML ElementTree based on Excel + JSON configuration.
-    Supports logging of all operations using an XmlChangelog instance.
+    Supports logging of all operations using a Changelog instance.
     """
 
-    def __init__(self, excel_path: str, file_id: str, task_name:str, changelog: Changelog):
+    def __init__(self, excel_path: str, file_id: str, task_name: str, changelog: Changelog):
         """
-        Initialize the transformer.
+        Initializes the FieldTransformer with input paths, configuration and logging.
 
         Args:
-            excel_path (str): Name of the Excel file (only filename, not full path).
-            file_id (str): ID of the XML file to match against the Excel rows.
-            changelog (XmlChangelog): Instance for logging all modifications.
+            excel_path (str): Name of the Excel file (filename only).
+            file_id (str): ID of the XML file to match against Excel rows.
+            task_name (str): Name of the current processing task.
+            changelog (Changelog): Changelog instance for tracking modifications.
         """
-        self.task_name=task_name
+        self.task_name = task_name
         self.excel_filename = os.path.basename(excel_path)
         self.excel_path = os.path.join("files", "conversion-tables", self.excel_filename)
         self.file_id = str(file_id)
@@ -40,8 +41,17 @@ class FieldTransformer:
     def _resolve_config_path(self) -> str:
         excel_name = os.path.splitext(self.excel_filename)[0]
         return os.path.join("configs", f"{excel_name}.json")
-    
-    def _sanitize_for_xml(self, value):
+
+    def _sanitize_for_xml(self, value) -> str:
+        """
+        Cleans up a raw string for safe XML insertion.
+
+        Args:
+            value: A raw cell value (can be NaN, number, or string).
+
+        Returns:
+            str: XML-safe string.
+        """
         if pd.isna(value):
             return ""
         value = str(value)
@@ -51,6 +61,20 @@ class FieldTransformer:
         value = html.escape(value)
         value = ' '.join(value.split())
         return value
+
+    def _normalize_xpath(self, xpath: str) -> str:
+        """
+        Ensures that the XPath string starts with '//' unless it's absolute or relative.
+
+        Args:
+            xpath (str): Raw XPath from config.
+
+        Returns:
+            str: Normalized XPath.
+        """
+        if xpath.startswith(("/", ".", "//")):
+            return xpath
+        return f"//{xpath}"
 
     def _load_config(self):
         if not os.path.exists(self.config_path):
@@ -92,13 +116,13 @@ class FieldTransformer:
 
     def apply_transformations(self, tree: etree._ElementTree) -> etree._ElementTree:
         """
-        Applies the configured transformations to the XML tree.
+        Applies configured transformations to the provided XML tree.
 
         Args:
-            tree (etree._ElementTree): The XML tree to modify.
+            tree (etree._ElementTree): Input XML tree.
 
         Returns:
-            etree._ElementTree: The transformed XML tree.
+            etree._ElementTree: Modified XML tree.
         """
         if self.row is None:
             return tree
@@ -124,40 +148,64 @@ class FieldTransformer:
     def _apply_update(self, op: Dict[str, Any], root: etree._Element):
         raw_val = self.row[op["to"]["col"]]
         to_val = self._sanitize_for_xml(raw_val)
-        nodes = root.xpath(op["to"]["xpath"])
+        xpath = self._normalize_xpath(op["to"]["xpath"])
+        nodes = root.xpath(xpath)
         if not nodes:
-            print(f"Update skipped: no nodes found for XPath '{op['to']['xpath']}'")
+            print(f"Update skipped: no nodes found for XPath '{xpath}'")
             return
         for node in nodes:
             old_val = self._sanitize_for_xml(node.text or "")
             if old_val != to_val:
                 node.text = to_val
-                self.changelog.log_update(self.task_name, op["to"]["xpath"], old_val, to_val)
+                self.changelog.log_update(self.task_name, xpath, old_val, to_val)
 
     def _apply_add(self, op: Dict[str, Any], root: etree._Element):
         raw_val = self.row[op["to"]["col"]]
         to_val = self._sanitize_for_xml(raw_val)
-        parent_path = os.path.dirname(op["to"]["xpath"])
-        tag = os.path.basename(op["to"]["xpath"])
+        xpath = self._normalize_xpath(op["to"]["xpath"].strip())
+        is_fresh = op["to"].get("is_fresh", True)
+
+        # Clean trailing slash
+        xpath = xpath.rstrip("/")
+        
+        # Split into parent path and tag
+        path_parts = xpath.rsplit("/", 1)
+        if len(path_parts) == 2:
+            parent_path, tag = path_parts
+        else:
+            # Means xpath is just like 'ExclusionCriteria'
+            parent_path = "."
+            tag = path_parts[0]
+
+        if not tag:
+            raise ValueError(f"Invalid XPath: cannot extract tag name from '{xpath}'")
+
         parent_nodes = root.xpath(parent_path)
         if not parent_nodes:
-            print(f"Add skipped: parent node not found for XPath '{parent_path}'")
-            return
+            print(f"Parent node not found for XPath '{parent_path}'. Inserting under root instead.")
+            parent_nodes = [root]
+
         for parent in parent_nodes:
-            new_elem = etree.Element(tag)
+            if is_fresh:
+                new_elem = etree.Element(f"{{urn:fresh-enrichment:v1}}{tag}")
+            else:
+                new_elem = etree.Element(tag)
             new_elem.text = to_val
             parent.append(new_elem)
-            self.changelog.log_add(self.task_name, op["to"]["xpath"], to_val)
+            self.changelog.log_add(self.task_name, xpath, to_val)
+
+
+
 
     def _apply_delete(self, op: Dict[str, Any], root: etree._Element):
-        nodes = root.xpath(op["from"]["xpath"])
+        xpath = self._normalize_xpath(op["from"]["xpath"])
+        nodes = root.xpath(xpath)
         if not nodes:
-            print(f"Delete skipped: no nodes found for XPath '{op['from']['xpath']}'")
+            print(f"Delete skipped: no nodes found for XPath '{xpath}'")
             return
         for node in nodes:
             old_val = self._sanitize_for_xml(node.text or "")
             parent = node.getparent()
             if parent is not None:
                 parent.remove(node)
-                self.changelog.log_delete(self.task_name, op["from"]["xpath"], old_val)
-
+                self.changelog.log_delete(self.task_name, xpath, old_val)

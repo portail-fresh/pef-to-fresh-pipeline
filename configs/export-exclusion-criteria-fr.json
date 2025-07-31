@@ -5,18 +5,19 @@
       "type": "update",
       "from": {
         "col": "Critères d'inclusion",
-        "xpath": "//CriteresInclusionFR"
+        "xpath": "CriteresInclusionFR"
       },
       "to": {
         "col": "Critères d'inclusion(PUR)",
-        "xpath": "//CriteresInclusionFR"
+        "xpath": "CriteresInclusionFR"
       }
     },
     {
       "type": "add",
       "to": {
         "col": "Critères d'exclusion",
-        "xpath": "//ExclusionCriteria"
+        "xpath": "ExclusionCriterionFR",
+        "is_fresh":true
       }
     }
 
