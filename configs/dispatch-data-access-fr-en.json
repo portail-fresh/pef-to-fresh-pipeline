@@ -1,0 +1,216 @@
+{
+  "file_id_column": "ID",
+  "operations": [
+    {
+      "type": "delete",
+      "from": {
+        "col": "[FR] ModalitesAcces",
+        "xpath": "ModalitesAccesFR"
+      }
+    },
+    {
+      "type": "delete",
+      "from": {
+        "col": "[EN] ModalitesAcces",
+        "xpath": "ModalitesAccesEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] avlStatus",
+        "xpath": "IndividualDataAccessFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] accsPlac",
+        "xpath": "DataLocationFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] complete",
+        "xpath": "DataFileCompletenessFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] restrctn",
+        "xpath": "AccessRestrictionsFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] conditions",
+        "xpath": "AccessConditionsFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] contact",
+        "xpath": "ContactPointFR/ContactNameFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] citReq",
+        "xpath": "DataCitationStatementFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] deposReq",
+        "xpath": "DataCitationRequirementFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] confDec",
+        "xpath": "NonDisclosureAgreementFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] notes",
+        "xpath": "AdditionalDataAccessLinkFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] disclaimer",
+        "xpath": "disclaimerFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] specPerm",
+        "xpath": "DataAccessRequestToolFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] othRefs",
+        "xpath": "othRefsFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[FR] othId",
+        "xpath": "othIdFR"
+      }
+    },
+
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] avlStatus",
+        "xpath": "IndividualDataAccessEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] accsPlac",
+        "xpath": "DataLocationEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] complete",
+        "xpath": "DataFileCompletenessEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] restrctn",
+        "xpath": "AccessRestrictionsEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] conditions",
+        "xpath": "AccessConditionsEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] contact",
+        "xpath": "ContactPointEN/ContactNameEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] citReq",
+        "xpath": "DataCitationStatementEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] deposReq",
+        "xpath": "DataCitationRequirementEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] confDec",
+        "xpath": "NonDisclosureAgreementEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] notes",
+        "xpath": "AdditionalDataAccessLinkEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] disclaimer",
+        "xpath": "disclaimerEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] specPerm",
+        "xpath": "DataAccessRequestToolEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] othRefs",
+        "xpath": "othRefsEN"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "[EN] othId",
+        "xpath": "othIdEN"
+      }
+    }
+  ]
+}

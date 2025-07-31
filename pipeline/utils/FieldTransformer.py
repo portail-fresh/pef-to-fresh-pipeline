@@ -109,7 +109,7 @@ class FieldTransformer:
     def _match_row(self):
         match = self.df[self.df[self.config["file_id_column"]].astype(str) == self.file_id]
         if match.empty:
-            print(f"No matching row found for ID '{self.file_id}'. No transformations will be applied.")
+            #print(f"No matching row found for ID '{self.file_id}'. No transformations will be applied.")
             self.row = None
         else:
             self.row = match.iloc[0]
@@ -129,9 +129,12 @@ class FieldTransformer:
 
         root = tree.getroot()
         for op in self.config["operations"]:
+            if not op.get("enabled", True):
+                continue
             self._apply_operation(op, root)
 
         return tree
+
 
     def _apply_operation(self, op: Dict[str, Any], root: etree._Element):
         op_type = op.get("type")
@@ -144,6 +147,22 @@ class FieldTransformer:
             self._apply_delete(op, root)
         else:
             print(f"Unknown operation type: '{op_type}'")
+            
+    def _is_significant(self, value: str) -> bool:
+        """
+        Verifica se un valore è significativo per scopi XML.
+        Considera vuoti stringhe con solo spazi o simboli di punteggiatura.
+
+        Args:
+            value (str): Stringa già sanificata.
+
+        Returns:
+            bool: True se il valore è considerato valido, False altrimenti.
+        """
+        if not value.strip():
+            return False
+        return bool(re.search(r'\w', value))  # contiene almeno una lettera o numero
+
 
     def _apply_update(self, op: Dict[str, Any], root: etree._Element):
         raw_val = self.row[op["to"]["col"]]
@@ -151,29 +170,39 @@ class FieldTransformer:
         xpath = self._normalize_xpath(op["to"]["xpath"])
         nodes = root.xpath(xpath)
         if not nodes:
-            print(f"Update skipped: no nodes found for XPath '{xpath}'")
             return
+
+        if not self._is_significant(to_val):
+            # Delete instead of update
+            for node in nodes:
+                old_val = self._sanitize_for_xml(node.text or "")
+                parent = node.getparent()
+                if parent is not None:
+                    parent.remove(node)
+                    self.changelog.log_delete(self.task_name, xpath, old_val)
+            return
+
         for node in nodes:
             old_val = self._sanitize_for_xml(node.text or "")
             if old_val != to_val:
                 node.text = to_val
                 self.changelog.log_update(self.task_name, xpath, old_val, to_val)
 
+
     def _apply_add(self, op: Dict[str, Any], root: etree._Element):
         raw_val = self.row[op["to"]["col"]]
         to_val = self._sanitize_for_xml(raw_val)
+        if not self._is_significant(to_val):
+            return
+
         xpath = self._normalize_xpath(op["to"]["xpath"].strip())
         is_fresh = op["to"].get("is_fresh", True)
 
-        # Clean trailing slash
         xpath = xpath.rstrip("/")
-        
-        # Split into parent path and tag
         path_parts = xpath.rsplit("/", 1)
         if len(path_parts) == 2:
             parent_path, tag = path_parts
         else:
-            # Means xpath is just like 'ExclusionCriteria'
             parent_path = "."
             tag = path_parts[0]
 
@@ -182,7 +211,6 @@ class FieldTransformer:
 
         parent_nodes = root.xpath(parent_path)
         if not parent_nodes:
-            print(f"Parent node not found for XPath '{parent_path}'. Inserting under root instead.")
             parent_nodes = [root]
 
         for parent in parent_nodes:
@@ -193,8 +221,6 @@ class FieldTransformer:
             new_elem.text = to_val
             parent.append(new_elem)
             self.changelog.log_add(self.task_name, xpath, to_val)
-
-
 
 
     def _apply_delete(self, op: Dict[str, Any], root: etree._Element):

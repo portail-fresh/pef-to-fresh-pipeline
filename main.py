@@ -44,7 +44,8 @@ def run_pipeline():
         (process_collection_dates, {}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
-        (process_inclusion_criteria, {}),
+        #(process_inclusion_criteria, {}),
+        (dispatch_data_access, {}),
         (split_fr_en, {})
     ]
 
