@@ -1,59 +1,7 @@
-import os
-import datetime
-import logging
 import inspect
 from pathlib import Path
-from pipeline.utils.load_config import load_config
 from pipeline.tasks import *
-from pipeline.utils.logging import setup_logging
-from pipeline.utils.XmlChangelog import XmlChangelog  # Assicurati che il path sia corretto
-
-# Setup logging configuration
-setup_logging()
-logger = logging.getLogger(__name__)
-
-
-class PipelineContext:
-    """
-    Context object holding shared resources and paths
-    for the current pipeline run, including individual changelogs
-    for each XML file.
-    """
-    def __init__(self, run_dir: Path):
-        self.run_dir = run_dir
-        self.outputs_dir = run_dir / "outputs"
-        self.changelogs_dir = run_dir / "changelogs"
-
-        self.outputs_dir.mkdir(parents=True, exist_ok=True)
-        self.changelogs_dir.mkdir(parents=True, exist_ok=True)
-
-        # Will hold XmlChangelog instances per XML file
-        self.changelogs = {}
-
-    def get_run_dir(self):
-        return self.run_dir
-
-    def get_outputs_dir(self):
-        return self.outputs_dir
-
-    def get_changelogs_dir(self):
-        return self.changelogs_dir
-
-    def init_changelog_for_file(self, xml_file: str):
-        """
-        Initialize a changelog object for a given XML file if not already present.
-        """
-        if xml_file not in self.changelogs:
-            self.changelogs[xml_file] = XmlChangelog(
-                xml_file=xml_file,
-                log_dir=self.changelogs_dir
-            )
-
-    def get_changelog(self, xml_file: str):
-        """
-        Returns the changelog object for the given file.
-        """
-        return self.changelogs.get(xml_file, None)
+from pipeline.utils.PipelineContext import PipelineContext
 
 
 def execute_task(task, xml_file, input_folder=None, output_folder=None, context=None, **kwargs):
@@ -85,20 +33,10 @@ def run_pipeline():
     """
     Executes the entire XML modification pipeline.
     """
-    logger.info("Starting XML Modification Flow")
-
-    # Load folder configuration
-    config = load_config("folders.yaml")
-    original_folder = config.get('input_files_folder')
-    runs_folder = config.get('runs_folder')
-
-    # Create a unique folder for this run
-    datetime_str = "run" + datetime.datetime.now().strftime("-%Y%m%d-%H%M%S")
-    run_temp_folder = Path(runs_folder) / datetime_str
-    run_temp_folder.mkdir(parents=True, exist_ok=True)
-
     # Initialize the pipeline context
-    context = PipelineContext(run_temp_folder)
+    run_context = PipelineContext()
+    logger=run_context.get_logger()
+    logger.info("Starting XML Modification Flow")
 
     tasks = [
         (correct_special_characters, {}),
@@ -110,14 +48,14 @@ def run_pipeline():
         (split_fr_en, {})
     ]
 
-    current_input_folder = Path(original_folder)
+    current_input_folder = Path(run_context.get_original_folder())
 
     for idx, (task, kwargs) in enumerate(tasks):
         task_name = f"{idx + 1:02d}-{task.__name__}"
 
         # Each task writes to its own subfolder inside outputs/
         current_output_folder = (
-            context.get_outputs_dir() / task_name
+            run_context.get_outputs_dir() / task_name
             if 'output_folder' in task.__code__.co_varnames
             else None
         )
@@ -129,7 +67,7 @@ def run_pipeline():
 
         for xml_file in xml_files:
             # Initialize changelog for this file
-            context.init_changelog_for_file(xml_file)
+            run_context.init_changelog_for_file(xml_file)
 
             # Execute the task
             execute_task(
@@ -137,7 +75,7 @@ def run_pipeline():
                 xml_file,
                 input_folder=current_input_folder,
                 output_folder=current_output_folder,
-                context=context,
+                context=run_context,
                 **kwargs
             )
 

@@ -25,7 +25,7 @@ def process_inclusion_criteria(xml_file: str, input_folder: str, output_folder: 
         task_name="process_inclusion_criteria"
 
         if not input_path.exists():
-            logger.warning("Input file '%s' does not exist. Skipping.", input_path)
+            logger.error("Input file '%s' does not exist. Skipping.", input_path)
             return
 
         try:
@@ -38,7 +38,7 @@ def process_inclusion_criteria(xml_file: str, input_folder: str, output_folder: 
 
         changelog = context.get_changelog(xml_file) if context else None
         if changelog is None:
-            logger.warning("No changelog found for '%s'. Skipping.", xml_file)
+            logger.error("No changelog found for '%s'. Skipping.", xml_file)
             return
 
         # Path to Excel file (assumed to be in working directory)
