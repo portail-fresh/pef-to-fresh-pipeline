@@ -3,13 +3,36 @@
 ## Overview  
 The **PEF to FReSH Pipeline** is a Python project designed to reformat and transform metadata references from the [Portail Epidemiologie France (PEF) catalog](https://epidemiologie-france.aviesan.fr/) for integration into the FReSH (France Recherche en Santé Humaine) catalog.
 
-This pipeline automates data cleaning and reformatting tasks, ensuring compatibility with the FReSH metadata schema.
+This pipeline automates data cleaning and reformatting tasks, ensuring compatibility with the [FReSH metadata schema](https://github.com/portail-fresh/fresh-metadata-schema).
 
-## Data Transformation
+## Source Data
 
-Data is transformed step-by-step, with intermediate results saved at each stage to maintain traceability.
+The Portail Epidémiologie France (PEF) catalog includes **1,099** bilingual records (French and English). Of these, **22** were excluded from the migration to the FReSH catalog: **20** belong to the medico-administrative domain and fall outside the scope of FReSH, while **2** are duplicates of other published studies in PEF.
 
-Each task is defined by a Python function which solves a specific issue in the original metadata.
+PEF contributors were asked to update their metadata records by **May 26, 2025**. Updates submitted after this date were not considered in the migration process.
+
+
+
+## Data Transformation Pipeline
+
+The data is transformed through a step-by-step process, with intermediate outputs saved at each stage to ensure traceability.
+
+Each transformation task is implemented as a Python function designed to address a specific issue in the original metadata.
+
+### Transformation stages
+
+The transformation workflow is organized into three main stages:
+
+- **PEF>PEF**: Content transformation of specific PEF elements. These operations modify only the content of elements without altering the PEF metadata schema. Typical tasks in this step include content normalization and alignment with controlled vocabularies adopted by the FReSH catalog.
+
+- **PEF>PEF+**: Content transformation involving changes to the PEF metadata schema. In this step, the content of certain PEF elements is redistributed across different elements, and custom elements may be added to prepare the metadata for schema mapping to the FReSH schema.
+
+- **PEF+>FReSH**: Schema mapping from the customized PEF+ metadata schema to the FReSH metadata schema.
+
+ 
+![Graphical representation of the PEF to FReSH transformation steps.](docs/img/pef-transformation-steps.png)
+
+### Tasks list
 
 The current implementation of the pipeline executes the following tasks:
 
@@ -20,16 +43,17 @@ The current implementation of the pipeline executes the following tasks:
 | 3        | PEF>PEF  | Format collection dates tags in order to follow a standard format                                          | `process_collection_dates.py`            |
 | 4        | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
 | 5        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
+| 6        | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
+| 7        | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
 | 6        | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
 
-More detailed description of each task is described in the `docs` folder.
+More detailed description of each task is described in the `docs/` folder.
 
 ### Tasks definition
 
 Tasks are defined respecting the following criteria:
 
  - Each task should solve a unitary issue with original metadata
- - Each tasks should be idempotent, i.e. a repeated execution of the same task should give the same result
  - Each modification on an input XML file should produce a copy of the modified XML file as output.
 
 Tasks are implemented following as much as possible a common coding style and structure.
@@ -99,7 +123,7 @@ Tasks should be added in the `tasks` list as tuples containing the function name
     ```
 
 2. **Prepare Input Data**  
-   Place the original XML files to be parsed in the designated input folder, without subfolders. This path is specified in the `configs/folders.yaml` file under the `original_ddi_folder` key.
+   Place the original XML files to be parsed in the designated input folder, without subfolders. This path is specified in the `configs/folders.yaml` file under the `input_files_folder` key.
 
 
 3. **Run the Pipeline**  
