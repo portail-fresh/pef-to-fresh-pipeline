@@ -42,13 +42,11 @@ def run_pipeline():
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
         (process_collection_dates, {}),
+        (update_regions, {}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
         (process_inclusion_criteria, {}),
         (dispatch_data_access, {}),
-        (update_regions, {}),
-        
-        
         #(split_fr_en, {})
     ]
 
