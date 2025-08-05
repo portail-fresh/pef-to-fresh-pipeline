@@ -6,6 +6,7 @@ from .add_fresh_enrichment_namespace import add_fresh_enrichment_namespace
 from .add_fresh_identifier import add_fresh_identifier
 from .process_inclusion_criteria import process_inclusion_criteria
 from .dispatch_data_access import dispatch_data_access
+from .update_regions import update_regions
 from .split_fr_en import split_fr_en
 
 
@@ -19,6 +20,7 @@ __all__ = [
     "add_fresh_identifier",
     "process_inclusion_criteria",
     "dispatch_data_access",
+    "update_regions",
     "split_fr_en"
 
 ]

@@ -45,7 +45,8 @@ The current implementation of the pipeline executes the following tasks:
 | 5        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
 | 6        | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
 | 7        | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
-| 6        | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
+| 8        | PEF>PEF+ | Update french regions' names                                         | `update_regions.py`                |
+| 9        | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
 
 More detailed description of each task is described in the `docs/` folder.
 

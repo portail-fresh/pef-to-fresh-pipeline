@@ -46,7 +46,10 @@ def run_pipeline():
         (add_fresh_identifier, {}),
         (process_inclusion_criteria, {}),
         (dispatch_data_access, {}),
-        (split_fr_en, {})
+        (update_regions, {}),
+        
+        
+        #(split_fr_en, {})
     ]
 
     current_input_folder = Path(run_context.get_original_folder())
@@ -64,7 +67,7 @@ def run_pipeline():
         if current_output_folder:
             current_output_folder.mkdir(parents=True, exist_ok=True)
 
-        xml_files = get_xml_files(current_input_folder)
+        xml_files = get_xml_files(current_input_folder, context=run_context)
 
         for xml_file in xml_files:
             # Initialize changelog for this file
