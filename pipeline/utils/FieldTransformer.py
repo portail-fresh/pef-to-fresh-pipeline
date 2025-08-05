@@ -10,11 +10,41 @@ from pipeline.utils.Changelog import Changelog
 
 class FieldTransformer:
     """
-    Applies field-level transformations to an XML ElementTree based on Excel + JSON configuration.
-    Supports both 'by_id' and 'general' modes, and logs operations with a Changelog.
+    FieldTransformer applies XML transformations to a single file using
+    a combination of Excel lookup tables and a corresponding JSON configuration file.
+
+    It supports two operational modes:
+
+    - 'by_id' (default): applies transformations based on a unique file identifier (e.g., file name),
+      matching the corresponding row in the Excel file.
+    - 'general': applies transformations row-by-row across the entire Excel file,
+      matching values globally within the XML without needing a specific file ID.
+
+    All changes are logged using the provided Changelog instance.
+
+    Attributes:
+        task_name (str): Name of the task for changelog tracking.
+        excel_filename (str): Filename of the Excel mapping table.
+        excel_path (str): Full path to the Excel file (inside 'files/conversion-tables').
+        file_id (str): Unique identifier for the current XML file.
+        changelog (Changelog): Changelog instance to record all modifications.
+        config_path (str): Path to the associated JSON configuration file.
+        config (Dict): Parsed JSON configuration.
+        df (pd.DataFrame): Loaded Excel data as a DataFrame.
+        row (pd.Series): Matched row for the current file (used in 'by_id' mode).
+        mode (str): Operation mode, either 'by_id' or 'general'.
     """
 
     def __init__(self, excel_path: str, file_id: str, task_name: str, changelog: Changelog):
+        """
+        Initialize the FieldTransformer with file paths and configuration.
+
+        Args:
+            excel_path (str): Path to the Excel file containing the mapping table.
+            file_id (str): Identifier used to locate the relevant row in 'by_id' mode.
+            task_name (str): Name of the task for changelog grouping.
+            changelog (Changelog): Changelog instance used for logging operations.
+        """
         self.task_name = task_name
         self.excel_filename = os.path.basename(excel_path)
         self.excel_path = os.path.join("files", "conversion-tables", self.excel_filename)
@@ -33,10 +63,25 @@ class FieldTransformer:
             self._match_row()
 
     def _resolve_config_path(self) -> str:
+        """
+        Determines the path to the JSON config file associated with the Excel file.
+
+        Returns:
+            str: Path to the JSON configuration file.
+        """
         excel_name = os.path.splitext(self.excel_filename)[0]
         return os.path.join("configs", f"{excel_name}.json")
 
     def _sanitize_for_xml(self, value) -> str:
+        """
+        Cleans a value to make it safe and valid for XML output.
+
+        Args:
+            value: Any value from Excel or XML.
+
+        Returns:
+            str: Sanitized and XML-safe string.
+        """
         if pd.isna(value):
             return ""
         value = str(value)
@@ -46,9 +91,25 @@ class FieldTransformer:
         return ' '.join(value.split())
 
     def _normalize_xpath(self, xpath: str) -> str:
+        """
+        Converts shorthand XPath to a fully-qualified one, ensuring it starts with '/' or '//'.
+
+        Args:
+            xpath (str): Original XPath string.
+
+        Returns:
+            str: Normalized XPath string.
+        """
         return xpath if xpath.startswith(("/", ".", "//")) else f"//{xpath}"
 
     def _load_config(self):
+        """
+        Loads the transformation configuration from the JSON file.
+
+        Raises:
+            FileNotFoundError: If config file does not exist.
+            ValueError: If JSON is invalid or required fields are missing.
+        """
         if not os.path.exists(self.config_path):
             raise FileNotFoundError(f"Config file not found at '{self.config_path}'")
 
@@ -70,12 +131,25 @@ class FieldTransformer:
             raise ValueError("Missing 'file_id_column' in config for mode 'by_id'.")
 
     def _load_excel(self):
+        """
+        Loads the Excel mapping table and validates required columns.
+
+        Raises:
+            FileNotFoundError: If Excel file does not exist.
+            ValueError: If required columns are missing.
+        """
         if not os.path.exists(self.excel_path):
             raise FileNotFoundError(f"Excel file not found: {self.excel_path}")
         self.df = pd.read_excel(self.excel_path)
         self._validate_excel_columns()
 
     def _validate_excel_columns(self):
+        """
+        Validates that all required columns referenced in operations are present in the Excel file.
+
+        Raises:
+            ValueError: If any expected column is missing.
+        """
         required_cols = set()
         for op in self.config["operations"]:
             if "from" in op and "col" in op["from"]:
@@ -89,10 +163,22 @@ class FieldTransformer:
             raise ValueError(f"Missing columns in Excel file: {missing}")
 
     def _match_row(self):
+        """
+        Matches the row in the Excel DataFrame corresponding to the current file ID.
+        """
         match = self.df[self.df[self.config["file_id_column"]].astype(str) == self.file_id]
         self.row = match.iloc[0] if not match.empty else None
 
     def apply_transformations(self, tree: etree._ElementTree) -> etree._ElementTree:
+        """
+        Applies configured operations (update/add/delete) to the given XML tree.
+
+        Args:
+            tree (etree._ElementTree): The XML tree to transform.
+
+        Returns:
+            etree._ElementTree: Transformed XML tree.
+        """
         if self.mode == "by_id" and self.row is None:
             return tree
 
@@ -108,6 +194,14 @@ class FieldTransformer:
         return tree
 
     def _apply_operation(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
+        """
+        Dispatches the operation to the correct handler based on 'type'.
+
+        Args:
+            op (Dict[str, Any]): Operation configuration.
+            root (etree._Element): Root element of the XML tree.
+            row (pd.Series): Current row (from Excel).
+        """
         op_type = op.get("type")
         if op_type == "update":
             self._apply_update(op, root, row)
@@ -117,9 +211,26 @@ class FieldTransformer:
             self._apply_delete(op, root)
 
     def _is_significant(self, value: str) -> bool:
+        """
+        Checks if a string contains meaningful (non-whitespace) content.
+
+        Args:
+            value (str): Value to check.
+
+        Returns:
+            bool: True if value is significant.
+        """
         return bool(value.strip() and re.search(r'\w', value))
 
     def _apply_update(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
+        """
+        Updates existing values in the XML that match the 'from' value, replacing them with 'to'.
+
+        Args:
+            op (Dict[str, Any]): Update operation definition.
+            root (etree._Element): Root XML element.
+            row (pd.Series): Row from the Excel table.
+        """
         from_val_raw = row.get(op["from"]["col"])
         to_val_raw = row.get(op["to"]["col"])
         if pd.isna(from_val_raw) or pd.isna(to_val_raw):
@@ -138,6 +249,14 @@ class FieldTransformer:
                     self.changelog.log_update(self.task_name, xpath, old_val, to_val)
 
     def _apply_add(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
+        """
+        Adds a new element to the XML tree with the specified value.
+
+        Args:
+            op (Dict[str, Any]): Add operation definition.
+            root (etree._Element): Root XML element.
+            row (pd.Series): Row from the Excel table.
+        """
         raw_val = row.get(op["to"]["col"])
         to_val = self._sanitize_for_xml(raw_val)
         if not self._is_significant(to_val):
@@ -158,6 +277,13 @@ class FieldTransformer:
             self.changelog.log_add(self.task_name, xpath, to_val)
 
     def _apply_delete(self, op: Dict[str, Any], root: etree._Element):
+        """
+        Deletes elements matching the specified XPath.
+
+        Args:
+            op (Dict[str, Any]): Delete operation definition.
+            root (etree._Element): Root XML element.
+        """
         xpath = self._normalize_xpath(op["from"]["xpath"])
         nodes = root.xpath(xpath)
         for node in nodes:
@@ -169,4 +295,13 @@ class FieldTransformer:
                     self.changelog.log_delete(self.task_name, xpath, old_val)
 
     def _extract_value_nodes(self, node: etree._Element) -> List[etree._Element]:
+        """
+        Extracts <value> subelements if present, otherwise returns the node itself.
+
+        Args:
+            node (etree._Element): XML element to inspect.
+
+        Returns:
+            List[etree._Element]: List of elements containing textual values.
+        """
         return node.findall("value") or [node]
