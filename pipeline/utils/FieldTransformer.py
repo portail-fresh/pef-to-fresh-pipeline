@@ -55,6 +55,7 @@ class FieldTransformer:
         self.df: Optional[pd.DataFrame] = None
         self.row: Optional[pd.Series] = None
         self.mode: str = "by_id"
+        self._replace_set_logged = set()
 
         self._load_config()
         self._load_excel()
@@ -209,7 +210,9 @@ class FieldTransformer:
             self._apply_add(op, root, row)
         elif op_type == "delete":
             self._apply_delete(op, root)
-
+        elif op_type == "replace_set":
+            self._apply_replace_set(op, root, row)
+            
     def _is_significant(self, value: str) -> bool:
         """
         Checks if a string contains meaningful (non-whitespace) content.
@@ -221,6 +224,75 @@ class FieldTransformer:
             bool: True if value is significant.
         """
         return bool(value.strip() and re.search(r'\w', value))
+
+
+    def _apply_replace_set(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
+        """
+        Performs a 'replace_set' operation on the XML tree, replacing all existing
+        child <value> elements at the target XPath with new values derived from
+        mappings in the Excel table. Designed to work in 'general' mode.
+
+        The process is as follows:
+        1. Extract all current values from the 'from' XPath in the XML.
+        2. Map each extracted value to its corresponding 'to' value in the Excel table.
+        3. Replace all child <value> elements at the 'to' XPath with the mapped values.
+        4. Log each new value in the changelog, only once per operation.
+
+        Args:
+            op (Dict[str, Any]): The operation configuration dictionary, containing
+                                'from' and 'to' keys with 'xpath' and 'col'.
+            root (etree._Element): The root element of the XML tree to modify.
+            row (pd.Series): The current row from the Excel DataFrame. Not used
+                            for logging deduplication in this method.
+        """
+        # Normalize XPath and column references
+        from_xpath = self._normalize_xpath(op["from"]["xpath"])
+        to_xpath = self._normalize_xpath(op["to"]["xpath"])
+        from_col = op["from"]["col"]
+        to_col = op["to"]["col"]
+
+        collected_vals = []
+
+        # Step 1: Collect all current values from the 'from' XPath
+        from_nodes = root.xpath(from_xpath)
+        for node in from_nodes:
+            for val_node in self._extract_value_nodes(node):
+                raw_val = self._sanitize_for_xml(val_node.text or "")
+                if not raw_val:
+                    continue
+
+                # Step 2: Map XML value to Excel 'to' column
+                matches = self.df[self.df[from_col].astype(str) == raw_val]
+                if not matches.empty:
+                    mapped_val = self._sanitize_for_xml(matches[to_col].iloc[0])
+                    if self._is_significant(mapped_val):
+                        collected_vals.append(mapped_val)
+
+        # Step 3: Replace all child <value> elements at 'to' XPath
+        to_nodes = root.xpath(to_xpath)
+        for node in to_nodes:
+            # Remove existing children
+            for val_node in list(node):
+                node.remove(val_node)
+            # Append mapped values as new <value> elements
+            for new_val in collected_vals:
+                new_elem = etree.Element("value")
+                new_elem.text = new_val
+                node.append(new_elem)
+
+        # Step 4: Log each new value once per operation
+        if collected_vals and not getattr(self, "_replace_set_logged", False):
+            for val in collected_vals:
+                self.changelog.log_update(
+                    self.task_name,
+                    to_xpath,
+                    "[replaced set]",
+                    val
+                )
+            # Mark operation as logged to avoid duplicate logs in subsequent iterations
+            self._replace_set_logged = True
+
+
 
     def _apply_update(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
         """

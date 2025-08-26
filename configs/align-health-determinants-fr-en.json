@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "DeterminantsDeSanteFR",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "DeterminantsDeSanteFR",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "DeterminantsDeSanteFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "DeterminantsDeSanteEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}

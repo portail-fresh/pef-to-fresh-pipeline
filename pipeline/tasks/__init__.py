@@ -7,6 +7,7 @@ from .add_fresh_identifier import add_fresh_identifier
 from .process_inclusion_criteria import process_inclusion_criteria
 from .dispatch_data_access import dispatch_data_access
 from .update_regions import update_regions
+from .align_health_determinants import align_health_determinants
 from .split_fr_en import split_fr_en
 
 
@@ -21,6 +22,7 @@ __all__ = [
     "process_inclusion_criteria",
     "dispatch_data_access",
     "update_regions",
+    "align_health_determinants",
     "split_fr_en"
 
 ]

@@ -43,6 +43,7 @@ def run_pipeline():
         (correct_special_characters_optional, {}),
         (process_collection_dates, {}),
         (update_regions, {}),
+        (align_health_determinants, {}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
         (process_inclusion_criteria, {}),
