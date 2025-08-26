@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "ContenuBiothequeFR",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "ContenuBiothequeFR",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "ContenuBiothequeFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "ContenuBiothequeEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}

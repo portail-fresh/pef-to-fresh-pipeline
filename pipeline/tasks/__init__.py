@@ -8,6 +8,7 @@ from .process_inclusion_criteria import process_inclusion_criteria
 from .dispatch_data_access import dispatch_data_access
 from .update_regions import update_regions
 from .align_health_determinants import align_health_determinants
+from .align_biobank_content import align_biobank_content
 from .split_fr_en import split_fr_en
 
 
@@ -23,6 +24,7 @@ __all__ = [
     "dispatch_data_access",
     "update_regions",
     "align_health_determinants",
+    "align_biobank_content",
     "split_fr_en"
 
 ]
