@@ -44,11 +44,12 @@ The current implementation of the pipeline executes the following tasks:
 | 4        | PEF>PEF  | Update french regions' names                                                                               | `update_regions.py`                      |
 | 5        | PEF>PEF  | Update health determinants categories                                                                      | `align_health_determinants.py`           |
 | 6        | PEF>PEF  | Update biobank content categories                                                                          | `align_biobank_content.py`               |
-| 7        | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
-| 8        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
-| 9        | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
-| 10       | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
-| 11       | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
+| 7        | PEF>PEF  | Align data types                                                                                           | `align_data_types.py`                    |
+| 8        | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
+| 9        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
+| 10        | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
+| 11       | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
+| 12       | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
 
 More detailed description of each task is described in the `docs/` folder.
 

@@ -41,15 +41,15 @@ def run_pipeline():
     tasks = [
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
-        #(process_collection_dates, {}),
-        #(update_regions, {}),
-        #(align_health_determinants, {}),
-        #(align_biobank_content, {}),
+        (process_collection_dates, {}),
+        (update_regions, {}),
+        (align_health_determinants, {}),
+        (align_biobank_content, {}),
         (align_data_types, {}),
-        #(add_fresh_enrichment_namespace, {}),
-        #(add_fresh_identifier, {}),
-        #(process_inclusion_criteria, {}),
-        #(dispatch_data_access, {}),
+        (add_fresh_enrichment_namespace, {}),
+        (add_fresh_identifier, {}),
+        (process_inclusion_criteria, {}),
+        (dispatch_data_access, {}),
         #(split_fr_en, {})
     ]
 

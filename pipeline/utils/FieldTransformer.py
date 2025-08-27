@@ -298,7 +298,7 @@ class FieldTransformer:
                 self.changelog.log_update(
                     self.task_name,
                     to_xpath,
-                    "[replaced set]",
+                    "[reset]",
                     val
                 )
             # Mark operation as logged to avoid duplicate logs in subsequent iterations
