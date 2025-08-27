@@ -1,0 +1,21 @@
+{
+    "file_id_column": "ID_PEF",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_fr",
+                "xpath": "Donnees/TypeDonneesRecueilliesFR/value",
+                "is_fresh":false
+            }
+        },
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_en",
+                "xpath": "Donnees/TypeDonneesRecueilliesEN/value",
+                "is_fresh":false
+            }
+        }
+    ]
+}

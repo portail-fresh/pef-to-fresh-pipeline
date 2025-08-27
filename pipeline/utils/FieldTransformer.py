@@ -2,6 +2,7 @@ import os
 import json
 import re
 import html
+import unicodedata
 import pandas as pd
 from lxml import etree
 from typing import Optional, Dict, Any, List
@@ -164,23 +165,11 @@ class FieldTransformer:
             raise ValueError(f"Missing columns in Excel file: {missing}")
 
     def _match_row(self):
-        """
-        Matches the row in the Excel DataFrame corresponding to the current file ID.
-        """
         match = self.df[self.df[self.config["file_id_column"]].astype(str) == self.file_id]
-        self.row = match.iloc[0] if not match.empty else None
+        self.row = match if not match.empty else pd.DataFrame()
 
     def apply_transformations(self, tree: etree._ElementTree) -> etree._ElementTree:
-        """
-        Applies configured operations (update/add/delete) to the given XML tree.
-
-        Args:
-            tree (etree._ElementTree): The XML tree to transform.
-
-        Returns:
-            etree._ElementTree: Transformed XML tree.
-        """
-        if self.mode == "by_id" and self.row is None:
+        if self.mode == "by_id" and self.row.empty:
             return tree
 
         root = tree.getroot()
@@ -188,7 +177,8 @@ class FieldTransformer:
             if not op.get("enabled", True):
                 continue
             if self.mode == "by_id":
-                self._apply_operation(op, root, self.row)
+                for _, row in self.row.iterrows():  # iteri su tutte le righe corrispondenti
+                    self._apply_operation(op, root, row)
             else:
                 for _, row in self.df.iterrows():
                     self._apply_operation(op, root, row)
@@ -224,6 +214,8 @@ class FieldTransformer:
             bool: True if value is significant.
         """
         return bool(value.strip() and re.search(r'\w', value))
+    
+    
 
 
     def _apply_replace_set(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
@@ -252,6 +244,21 @@ class FieldTransformer:
         to_col = op["to"]["col"]
 
         collected_vals = []
+        
+        def _canon_for_match(s: str) -> str:
+            # 1) stringa
+            s = "" if s is None else str(s)
+            # 2) decodifica entità HTML/XML (es. &#x27; -> ')
+            s = html.unescape(s)
+            # 3) normalizzazione Unicode (NFKC gestisce accenti composti/decomposti)
+            s = unicodedata.normalize("NFKC", s)
+            # 4) uniforma apostrofi/virgolette “curve” a l'apostrofo semplice
+            s = re.sub(r"[’‘ʼ`´ˈʹ\u2019\u2018\u2032\u02BC]", "'", s)
+            # 5) sostituisci NBSP e compatta spazi
+            s = s.replace("\xa0", " ").strip()
+            s = re.sub(r"\s+", " ", s)
+            s = s.replace("&#x27;","'")
+            return s
 
         # Step 1: Collect all current values from the 'from' XPath
         from_nodes = root.xpath(from_xpath)
@@ -261,8 +268,13 @@ class FieldTransformer:
                 if not raw_val:
                     continue
 
+
                 # Step 2: Map XML value to Excel 'to' column
-                matches = self.df[self.df[from_col].astype(str) == raw_val]
+                #matches = self.df[self.df[from_col].astype(str) == raw_val]
+                raw_val_norm = _canon_for_match(raw_val)
+                df_from_norm = self.df[from_col].astype(str).map(_canon_for_match)
+                #print("xml", raw_val_norm, "excel", df_from_norm )
+                matches = self.df[df_from_norm == raw_val_norm]
                 if not matches.empty:
                     mapped_val = self._sanitize_for_xml(matches[to_col].iloc[0])
                     if self._is_significant(mapped_val):
@@ -337,6 +349,7 @@ class FieldTransformer:
         xpath = self._normalize_xpath(op["to"]["xpath"].strip()).rstrip("/")
         path_parts = xpath.rsplit("/", 1)
         parent_path, tag = path_parts if len(path_parts) == 2 else (".", path_parts[0])
+
         if not tag:
             raise ValueError(f"Invalid XPath: cannot extract tag name from '{xpath}'")
 
