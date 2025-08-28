@@ -13,6 +13,7 @@ from .align_data_types import align_data_types
 from .align_health_specs import align_health_specs
 from .add_collection_mode_categories import add_collection_mode_categories
 from .update_recruitment_sources import update_recruitment_sources
+from .update_population_types import update_population_types
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -32,6 +33,7 @@ __all__ = [
     "align_health_specs",
     "add_collection_mode_categories",
     "update_recruitment_sources",
+    "update_population_types",
     "split_fr_en"
 
 ]

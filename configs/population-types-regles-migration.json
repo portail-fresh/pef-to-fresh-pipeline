@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "PopulationFR/value",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "PopulationFR/value",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "PopulationFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "PopulationEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}

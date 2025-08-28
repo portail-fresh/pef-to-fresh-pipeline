@@ -1,0 +1,21 @@
+{
+    "file_id_column": "ID_PEF",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_fr",
+                "xpath": "PopulationFR/value",
+                "is_fresh":false
+            }
+        },
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_en",
+                "xpath": "PopulationEN/value",
+                "is_fresh":false
+            }
+        }
+    ]
+}

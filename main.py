@@ -47,7 +47,8 @@ def run_pipeline():
         #(align_biobank_content, {}),
         #(align_data_types, {}),
         #(align_health_specs, {}),
-        (update_recruitment_sources, {})
+        #(update_recruitment_sources, {})
+        (update_population_types, {})
         #(add_fresh_enrichment_namespace, {}),
         #(add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
