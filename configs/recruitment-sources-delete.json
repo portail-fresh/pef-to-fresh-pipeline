@@ -1,0 +1,13 @@
+{
+    "mode": "general",
+    "operations": [
+        {
+            "type": "delete",
+            "from": {
+                "col": "ValeursPEF",
+                "xpath": "RecrutementParIntermediaireFR"
+            }
+        }
+
+    ]
+}

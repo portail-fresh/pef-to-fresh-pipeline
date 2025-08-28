@@ -5,11 +5,11 @@
       "type": "update",
       "enabled": true,
       "from": {
-        "xpath": "TypeDonneesRecueilliesFR/value",
+        "xpath": "RecrutementParIntermediaireFR/value",
         "col": "ValeursPEF"
       },
       "to": {
-        "xpath": "TypeDonneesRecueilliesFR/value",
+        "xpath": "RecrutementParIntermediaireFR/value",
         "col": "Valeurs FReSH"
       }
     },
@@ -17,11 +17,11 @@
       "type": "replace_set",
       "enabled": true,
       "from": {
-        "xpath": "TypeDonneesRecueilliesFR/value",
+        "xpath": "RecrutementParIntermediaireFR",
         "col": "Valeurs FReSH"
       },
       "to": {
-        "xpath": "TypeDonneesRecueilliesEN/value",
+        "xpath": "RecrutementParIntermediaireEN",
         "col": "FReSHEN"
       }
     }

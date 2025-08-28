@@ -5,11 +5,11 @@
       "type": "update",
       "enabled": true,
       "from": {
-        "xpath": "DomainesDePathologiesFR",
+        "xpath": "DomainesDePathologiesFR/value",
         "col": "ValeursPEF"
       },
       "to": {
-        "xpath": "DomainesDePathologiesFR",
+        "xpath": "DomainesDePathologiesFR/value",
         "col": "Valeurs FReSH"
       }
     },

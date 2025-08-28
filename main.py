@@ -47,11 +47,12 @@ def run_pipeline():
         #(align_biobank_content, {}),
         #(align_data_types, {}),
         #(align_health_specs, {}),
-        (add_fresh_enrichment_namespace, {}),
+        (update_recruitment_sources, {})
+        #(add_fresh_enrichment_namespace, {}),
         #(add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
-        (add_collection_mode_categories, {}),
+        #(add_collection_mode_categories, {}),
         #(split_fr_en, {})
     ]
 
