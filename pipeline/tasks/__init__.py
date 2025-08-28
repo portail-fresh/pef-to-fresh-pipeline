@@ -11,6 +11,7 @@ from .align_health_determinants import align_health_determinants
 from .align_biobank_content import align_biobank_content
 from .align_data_types import align_data_types
 from .align_health_specs import align_health_specs
+from .add_collection_mode_categories import add_collection_mode_categories
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -28,6 +29,7 @@ __all__ = [
     "align_biobank_content",
     "align_data_types",
     "align_health_specs",
+    "add_collection_mode_categories",
     "split_fr_en"
 
 ]

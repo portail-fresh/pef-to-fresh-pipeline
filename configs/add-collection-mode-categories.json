@@ -1,0 +1,19 @@
+{
+    "file_id_column": "PEF_ID",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH",
+                "xpath": "CollectionModeFR"
+            }
+        },
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH",
+                "xpath": "CollectionModeEN"
+            }
+        }
+    ]
+}

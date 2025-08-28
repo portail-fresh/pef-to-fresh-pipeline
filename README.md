@@ -47,10 +47,11 @@ The current implementation of the pipeline executes the following tasks:
 | 7        | PEF>PEF  | Align data types                                                                                           | `align_data_types.py`                    |
 | 8        | PEF>PEF  | Align health specialties categories                                                                        | `align_health_specs.py`                  |
 | 9        | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
-| 10        | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
+| 10       | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
 | 11       | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
 | 12       | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
-| 13       | PEF>PEF+ | Split French and English linguistic versions                                                               | `split_fr_en.py`                         |
+| 13       | PEF>PEF+ | Add CESSDA categories for collection mode                                                                  | `add_collection_mode_categories.py`      |
+
 
 More detailed description of each task is described in the `docs/` folder.
 
