@@ -199,7 +199,7 @@ class FieldTransformer:
         elif op_type == "add":
             self._apply_add(op, root, row)
         elif op_type == "delete":
-            self._apply_delete(op, root)
+            self._apply_delete(op, root,row)
         elif op_type == "replace_set":
             self._apply_replace_set(op, root, row)
             
@@ -328,7 +328,7 @@ class FieldTransformer:
         for node in nodes:
             for val_node in self._extract_value_nodes(node):
                 old_val = self._sanitize_for_xml(val_node.text or "")
-                if old_val == from_val and old_val != to_val:
+                if old_val.lower() == from_val.lower() and old_val.lower() != to_val.lower():
                     val_node.text = to_val
                     self.changelog.log_update(self.task_name, xpath, old_val, to_val)
 
@@ -361,23 +361,33 @@ class FieldTransformer:
             parent.append(new_elem)
             self.changelog.log_add(self.task_name, xpath, to_val)
 
-    def _apply_delete(self, op: Dict[str, Any], root: etree._Element):
+    def _apply_delete(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
         """
-        Deletes elements matching the specified XPath.
-
-        Args:
-            op (Dict[str, Any]): Delete operation definition.
-            root (etree._Element): Root XML element.
+        Deletes elements matching the specified XPath,
+        restricted to those whose text matches the 'from' column value.
         """
         xpath = self._normalize_xpath(op["from"]["xpath"])
+        from_col = op["from"].get("col")
+
+        # se non c'è colonna in config → cancella tutti i valori come prima
+        expected_val = None
+        if from_col:
+            expected_val = row.get(from_col)
+            if pd.isna(expected_val):
+                return
+            expected_val = self._sanitize_for_xml(str(expected_val))
+
         nodes = root.xpath(xpath)
         for node in nodes:
             for val_node in self._extract_value_nodes(node):
                 old_val = self._sanitize_for_xml(val_node.text or "")
-                parent = val_node.getparent()
-                if parent is not None:
-                    parent.remove(val_node)
-                    self.changelog.log_delete(self.task_name, xpath, old_val)
+
+                # Se è specificata una colonna, elimina solo se corrisponde
+                if expected_val is None or old_val == expected_val:
+                    parent = val_node.getparent()
+                    if parent is not None:
+                        parent.remove(val_node)
+                        self.changelog.log_delete(self.task_name, xpath, old_val)
 
     def _extract_value_nodes(self, node: etree._Element) -> List[etree._Element]:
         """

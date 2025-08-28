@@ -10,6 +10,7 @@ from .update_regions import update_regions
 from .align_health_determinants import align_health_determinants
 from .align_biobank_content import align_biobank_content
 from .align_data_types import align_data_types
+from .align_health_specs import align_health_specs
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -26,6 +27,7 @@ __all__ = [
     "align_health_determinants",
     "align_biobank_content",
     "align_data_types",
+    "align_health_specs",
     "split_fr_en"
 
 ]

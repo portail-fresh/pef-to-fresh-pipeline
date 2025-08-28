@@ -1,0 +1,21 @@
+{
+    "file_id_column": "ID_PEF",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_fr",
+                "xpath": "DomainesDePathologiesFR/value",
+                "is_fresh":false
+            }
+        },
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_en",
+                "xpath": "DomainesDePathologiesEN/value",
+                "is_fresh":false
+            }
+        }
+    ]
+}

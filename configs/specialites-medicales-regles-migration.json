@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "DomainesDePathologiesFR",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "DomainesDePathologiesFR",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "DomainesDePathologiesFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "DomainesDePathologiesEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}
