@@ -1,0 +1,19 @@
+{
+    "file_id_column": "ID_PEF",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_fr",
+                "xpath": "RareDiseasesFR"
+            }
+        },
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_en",
+                "xpath": "RareDiseasesEN"
+            }
+        }
+    ]
+}

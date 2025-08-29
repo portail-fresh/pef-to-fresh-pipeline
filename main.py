@@ -48,12 +48,13 @@ def run_pipeline():
         #(align_data_types, {}),
         #(align_health_specs, {}),
         #(update_recruitment_sources, {})
-        (update_population_types, {})
-        #(add_fresh_enrichment_namespace, {}),
+        #(update_population_types, {})
+        (add_fresh_enrichment_namespace, {}),
         #(add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
         #(add_collection_mode_categories, {}),
+        (add_rare_diseases,{}),
         #(split_fr_en, {})
     ]
 

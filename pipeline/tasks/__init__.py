@@ -14,6 +14,7 @@ from .align_health_specs import align_health_specs
 from .add_collection_mode_categories import add_collection_mode_categories
 from .update_recruitment_sources import update_recruitment_sources
 from .update_population_types import update_population_types
+from .add_rare_diseases import add_rare_diseases
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -34,6 +35,7 @@ __all__ = [
     "add_collection_mode_categories",
     "update_recruitment_sources",
     "update_population_types",
+    "add_rare_diseases",
     "split_fr_en"
 
 ]

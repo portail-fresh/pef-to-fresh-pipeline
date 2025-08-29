@@ -25,7 +25,7 @@ The transformation workflow is organized into three main stages:
 
 - **PEF>PEF**: Content transformation of specific PEF elements. These operations modify only the content of elements without altering the PEF metadata schema. Typical tasks in this step include content normalization and alignment with controlled vocabularies adopted by the FReSH catalog.
 
-- **PEF>PEF+**: Content transformation involving changes to the PEF metadata schema. In this step, the content of certain PEF elements is redistributed across different elements, and custom elements may be added to prepare the metadata for schema mapping to the FReSH schema.
+- **PEF>PEF+**: Content transformation involving changes to the PEF metadata schema. In this step, the content of certain PEF elements is redistributed across different elements, and custom elements may be added to prepare the metadata for schema mapping to the FReSH schema. A specific namespace `<xsl:namespace name="fresh">urn:fresh-enrichment:v1</xsl:namespace>`  is added in order to distinguish custom elements from original PEF elements.
 
 - **PEF+>FReSH**: Schema mapping from the customized PEF+ metadata schema to the FReSH metadata schema.
 
@@ -47,12 +47,13 @@ The current implementation of the pipeline executes the following tasks:
 | 7        | PEF>PEF  | Align data types                                                                                           | `align_data_types.py`                    |
 | 8        | PEF>PEF  | Align health specialties categories                                                                        | `align_health_specs.py`                  |
 | 9        | PEF>PEF  | Update recruitment sources categories                                                                      | `update_recruitment_sources.py`          |
-| 10       | PEF>PEF  | Update population categories, adding people with disabilities                                              | `update_population_types.py`          |
+| 10       | PEF>PEF  | Update population categories, adding people with disabilities                                              | `update_population_types.py`             |
 | 11       | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
 | 12       | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
 | 13       | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
 | 14       | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
 | 15       | PEF>PEF+ | Add CESSDA categories for collection mode                                                                  | `add_collection_mode_categories.py`      |
+| 16       | PEF>PEF+ | Add "Rare diseases" flag for concerned studies                                                             | `add_rare_diseases.py`                   |
 
 
 More detailed description of each task is described in the `docs/` folder.
