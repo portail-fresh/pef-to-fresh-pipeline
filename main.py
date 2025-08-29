@@ -49,14 +49,15 @@ def run_pipeline():
         #(align_health_specs, {}),
         #(update_recruitment_sources, {})
         #(update_population_types, {})
-        (update_study_categories, {})
-        #(add_fresh_enrichment_namespace, {}),
+        #(update_study_categories, {})
+        (add_fresh_enrichment_namespace, {}),
         #(add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
         #(add_collection_mode_categories, {}),
         #(add_rare_diseases,{}),
         #(add_nct_identifier, {}),
+        (add_research_type,{}),
         #(split_fr_en, {})
     ]
 
