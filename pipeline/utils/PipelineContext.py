@@ -19,6 +19,7 @@ class PipelineContext:
         self.folder_config = load_config("folders.yaml")
         self.original_folder = self.folder_config.get('input_files_folder')
         self.runs_folder = self.folder_config.get('runs_folder')
+        self.conversion_tables_folder = self.folder_config.get('conversion_tables_folder')
 
         # Create a unique folder for this run
         datetime_str = "run" + datetime.datetime.now().strftime("-%Y%m%d-%H%M%S")
@@ -68,4 +69,7 @@ class PipelineContext:
     
     def get_logger(self):
         return self.logger
+    
+    def get_conversion_tables_folder(self):
+        return self.conversion_tables_folder
 

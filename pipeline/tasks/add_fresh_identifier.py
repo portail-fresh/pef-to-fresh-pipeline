@@ -8,7 +8,7 @@ FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"
 
 def add_fresh_identifier(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
-    Adds a <fresh:ID> element to the <Metadonnees> section of the XML file, 
+    Adds a <fresh:ID agency="FReSH"> element to the <Metadonnees> section of the XML file, 
     if it doesn't already exist. The value is built as 'FRESH-PEF<ID>'.
     
     Args:
@@ -54,13 +54,14 @@ def add_fresh_identifier(xml_file: str, input_folder: str, output_folder: str, c
         changelog = context.get_changelog(xml_file) if context else None
 
         if fresh_id_elem is None:
-            # Create <fresh:ID> and append it
+            # Create <fresh:ID> and append it, adding agency attribute
             fresh_elem = etree.Element(xpath_expr, nsmap=nsmap)
+            fresh_elem.set("agency", "FReSH")
             fresh_elem.text = fresh_id_value
             metadonnees.append(fresh_elem)
-            logger.info("Added <fresh:ID> with value: %s", fresh_id_value)
+            logger.info("Added <fresh:ID agency='FReSH'> with value: %s", fresh_id_value)
             if changelog:
-                changelog.log_add(task_name, field="fresh:ID", new_value=fresh_id_value)
+                changelog.log_add(task_name, field="fresh:ID[@agency='FReSH']", new_value=fresh_id_value)
         else:
             logger.info("<fresh:ID> already exists, skipping addition.")
 

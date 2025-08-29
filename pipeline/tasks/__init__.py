@@ -15,6 +15,7 @@ from .add_collection_mode_categories import add_collection_mode_categories
 from .update_recruitment_sources import update_recruitment_sources
 from .update_population_types import update_population_types
 from .add_rare_diseases import add_rare_diseases
+from .add_nct_ids import add_nct_identifier
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -36,6 +37,7 @@ __all__ = [
     "update_recruitment_sources",
     "update_population_types",
     "add_rare_diseases",
+    "add_nct_identifier",
     "split_fr_en"
 
 ]

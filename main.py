@@ -50,11 +50,12 @@ def run_pipeline():
         #(update_recruitment_sources, {})
         #(update_population_types, {})
         (add_fresh_enrichment_namespace, {}),
-        #(add_fresh_identifier, {}),
+        (add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
         #(add_collection_mode_categories, {}),
-        (add_rare_diseases,{}),
+        #(add_rare_diseases,{}),
+        (add_nct_identifier, {}),
         #(split_fr_en, {})
     ]
 
