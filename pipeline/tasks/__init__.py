@@ -16,6 +16,7 @@ from .update_recruitment_sources import update_recruitment_sources
 from .update_population_types import update_population_types
 from .add_rare_diseases import add_rare_diseases
 from .add_nct_ids import add_nct_identifier
+from .update_study_categories import update_study_categories
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -38,6 +39,7 @@ __all__ = [
     "update_population_types",
     "add_rare_diseases",
     "add_nct_identifier",
+    "update_study_categories",
     "split_fr_en"
 
 ]

@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "TypeEnqueteFR/value",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "TypeEnqueteFR/value",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "TypeEnqueteFR/value",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "TypeEnqueteEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}
