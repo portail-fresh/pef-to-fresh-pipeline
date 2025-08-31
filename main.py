@@ -54,11 +54,12 @@ def run_pipeline():
         #(add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
+        (update_contacts, {}),
         #(add_collection_mode_categories, {}),
         #(add_rare_diseases,{}),
         #(add_nct_identifier, {}),
         #(add_research_type,{}),
-        (add_provenance, {})
+        #(add_provenance, {})
         #(remove_duplicate_empty, {}),
         
         #(split_fr_en, {})

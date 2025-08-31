@@ -19,6 +19,7 @@ from .add_nct_ids import add_nct_identifier
 from .update_study_categories import update_study_categories
 from .add_research_type import add_research_type
 from .remove_duplicate_empty import remove_duplicate_empty
+from .update_contacts import update_contacts
 from .add_provenance import add_provenance
 
 
@@ -46,6 +47,7 @@ __all__ = [
     "add_research_type",
     "remove_duplicate_empty",
     "add_provenance",
+    "update_contacts",
     "split_fr_en"
 
 ]
