@@ -17,7 +17,7 @@
       "type": "replace_set",
       "enabled": true,
       "from": {
-        "xpath": "RecrutementParIntermediaireFR",
+        "xpath": "RecrutementParIntermediaireFR/value",
         "col": "Valeurs FReSH"
       },
       "to": {

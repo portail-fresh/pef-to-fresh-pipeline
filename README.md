@@ -56,7 +56,8 @@ The current implementation of the pipeline executes the following tasks:
 | 16       | PEF>PEF+ | Add CESSDA categories for collection mode                                                                  | `add_collection_mode_categories.py`      |
 | 17       | PEF>PEF+ | Add "Rare diseases" flag for concerned studies                                                             | `add_rare_diseases.py`                   |
 | 18       | PEF>PEF+ | Add NCT identifier for studies listed in ClinicalTrials.gov                                                | `add_nct_identifier.py`                  |
-| 19       | PEF>PEF+ | Add research type label (always "observational study" for PEF records)                                     | `add_research_type.py`                  |
+| 19       | PEF>PEF+ | Add research type label (always "observational study" for PEF records)                                     | `add_research_type.py`                   |
+| 20       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.

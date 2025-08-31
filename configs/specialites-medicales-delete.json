@@ -5,7 +5,7 @@
             "type": "delete",
             "from": {
                 "col": "ValeursPEF",
-                "xpath": "DomainesDePathologiesFR"
+                "xpath": "DomainesDePathologiesFR/value"
             }
         }
 

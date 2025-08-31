@@ -274,7 +274,7 @@ class FieldTransformer:
                 raw_val_norm = _canon_for_match(raw_val)
                 df_from_norm = self.df[from_col].astype(str).map(_canon_for_match)
                 #print("xml", raw_val_norm, "excel", df_from_norm )
-                matches = self.df[df_from_norm == raw_val_norm]
+                matches = self.df[df_from_norm.str.lower() == raw_val_norm.lower()]
                 if not matches.empty:
                     mapped_val = self._sanitize_for_xml(matches[to_col].iloc[0])
                     if self._is_significant(mapped_val):

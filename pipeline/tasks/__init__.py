@@ -18,6 +18,7 @@ from .add_rare_diseases import add_rare_diseases
 from .add_nct_ids import add_nct_identifier
 from .update_study_categories import update_study_categories
 from .add_research_type import add_research_type
+from .remove_duplicate_empty import remove_duplicate_empty
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -42,6 +43,7 @@ __all__ = [
     "add_nct_identifier",
     "update_study_categories",
     "add_research_type",
+    "remove_duplicate_empty",
     "split_fr_en"
 
 ]
