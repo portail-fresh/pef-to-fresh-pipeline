@@ -1,0 +1,12 @@
+{
+    "file_id_column": "ID_PEF",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH",
+                "xpath": "Pathology"
+            }
+        }
+    ]
+}

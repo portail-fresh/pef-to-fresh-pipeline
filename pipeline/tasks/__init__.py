@@ -21,6 +21,7 @@ from .add_research_type import add_research_type
 from .remove_duplicate_empty import remove_duplicate_empty
 from .update_contacts import update_contacts
 from .add_provenance import add_provenance
+from .add_pathologies import add_pathologies
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -48,6 +49,7 @@ __all__ = [
     "remove_duplicate_empty",
     "add_provenance",
     "update_contacts",
+    "add_pathologies",
     "split_fr_en"
 
 ]
