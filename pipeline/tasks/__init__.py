@@ -19,6 +19,7 @@ from .add_nct_ids import add_nct_identifier
 from .update_study_categories import update_study_categories
 from .add_research_type import add_research_type
 from .remove_duplicate_empty import remove_duplicate_empty
+from .add_provenance import add_provenance
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -44,6 +45,7 @@ __all__ = [
     "update_study_categories",
     "add_research_type",
     "remove_duplicate_empty",
+    "add_provenance",
     "split_fr_en"
 
 ]
