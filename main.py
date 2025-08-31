@@ -60,7 +60,8 @@ def run_pipeline():
         #(add_nct_identifier, {}),
         #(add_research_type,{}),
         #(add_provenance, {}),
-        (add_pathologies, {}),
+        #(add_pathologies, {}),
+        (add_nations,{}),
         #(remove_duplicate_empty, {}),
         
         #(split_fr_en, {})
