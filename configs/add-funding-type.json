@@ -1,0 +1,20 @@
+{
+    "file_id_column": "ID_PEF",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFReSH_fr",
+                "xpath": "FundingAgentTypeFR"
+            }
+        },
+        {
+            "type": "add",
+            "to": {
+                "col": "ChampFresh_en",
+                "xpath": "FundingAgentTypeEN"
+            }
+        }
+        
+    ]
+}

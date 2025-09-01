@@ -65,7 +65,8 @@ def run_pipeline():
         #(add_nations,{}),
         #(add_authorizing_agency,{}),
         #(add_metadata_contributor,{}),
-        (add_third_party_source,{}),
+        #(add_third_party_source,{}),
+        (add_funding_type,{}),
         #(remove_duplicate_empty, {}),
         
         #(split_fr_en, {})

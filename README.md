@@ -59,12 +59,14 @@ The current implementation of the pipeline executes the following tasks:
 | 19       | PEF>PEF+ | Add "Rare diseases" flag for concerned studies                                                             | `add_rare_diseases.py`                   |
 | 20       | PEF>PEF+ | Add NCT identifier for studies listed in ClinicalTrials.gov                                                | `add_nct_identifier.py`                  |
 | 21       | PEF>PEF+ | Add research type label (always "observational study" for PEF records)                                     | `add_research_type.py`                   |
-| 22       | PEF>PEF+ | Add CIM-11 pathologies                                                                                     | `add_pathologies.py`                     |
-| 23       | PEF>PEF+ | Add nations involved in the study, together with ISO-3166 codes                                            | `add_nations.py`                         |
-| 24       | PEF>PEF+ | Update authorizing agencies list                                                                           | `add_authorizing_agency.py`              |
-| 25       | PEF>PEF+ | Add the name of the person that created/edited the metadata sheet                                          | `add_metadata_contributors.py`           |
-| 26       | PEF>PEF+ | Declare third party source for studies that used medico-administrative sources                             | `add_third_party_source.py`           |
-| 27       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
+| 22       | PEF>PEF+ | Add provenance information about the metadata document ("PEF" by default)                                  | `add_provenance.py`                      |
+| 23       | PEF>PEF+ | Add CIM-11 pathologies                                                                                     | `add_pathologies.py`                     |
+| 24       | PEF>PEF+ | Add nations involved in the study, together with ISO-3166 codes                                            | `add_nations.py`                         |
+| 25       | PEF>PEF+ | Update authorizing agencies list                                                                           | `add_authorizing_agency.py`              |
+| 26       | PEF>PEF+ | Add the name of the person that created/edited the metadata sheet                                          | `add_metadata_contributors.py`           |
+| 27       | PEF>PEF+ | Declare third party source for studies that used medico-administrative sources                             | `add_third_party_source.py`              |
+| 28       | PEF>PEF+ | Add types for funding agencies (public, private, ...)                                                      | `add_funding_type.py`                    |
+| 29       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.
