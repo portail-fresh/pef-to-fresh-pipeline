@@ -1,0 +1,13 @@
+{
+    "file_id_column": "ID Fiche",
+    "operations": [
+        {
+            "type": "add",
+            "to": {
+                "col": "Prénom Nom",
+                "xpath": "MetadataContributorName"
+            }
+        }
+        
+    ]
+}

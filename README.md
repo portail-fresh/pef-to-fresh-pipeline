@@ -61,8 +61,9 @@ The current implementation of the pipeline executes the following tasks:
 | 21       | PEF>PEF+ | Add research type label (always "observational study" for PEF records)                                     | `add_research_type.py`                   |
 | 22       | PEF>PEF+ | Add CIM-11 pathologies                                                                                     | `add_pathologies.py`                     |
 | 23       | PEF>PEF+ | Add nations involved in the study, together with ISO-3166 codes                                            | `add_nations.py`                         |
-| 24       | PEF>PEF+ | Updated authorizing agencies list                                                                          | `add_authorizing_agency.py`              |
-| 25       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
+| 24       | PEF>PEF+ | Update authorizing agencies list                                                                           | `add_authorizing_agency.py`              |
+| 25       | PEF>PEF+ | Add the name of the person that created/edited the metadata sheet                                          | `add_metadata_contributors.py`           |
+| 26       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.

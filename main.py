@@ -63,7 +63,8 @@ def run_pipeline():
         #(add_provenance, {}),
         #(add_pathologies, {}),
         #(add_nations,{}),
-        (add_authorizing_agency,{}),
+        #(add_authorizing_agency,{}),
+        (add_metadata_contributor,{}),
         #(remove_duplicate_empty, {}),
         
         #(split_fr_en, {})
