@@ -50,7 +50,8 @@ def run_pipeline():
         #(update_recruitment_sources, {}),
         #(update_population_types, {}),
         #(update_study_categories, {}),
-        (add_fresh_enrichment_namespace, {}),
+        (align_study_status,{}),
+        #(add_fresh_enrichment_namespace, {}),
         #(add_fresh_identifier, {}),
         #(process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
@@ -61,7 +62,7 @@ def run_pipeline():
         #(add_research_type,{}),
         #(add_provenance, {}),
         #(add_pathologies, {}),
-        (add_nations,{}),
+        #(add_nations,{}),
         #(remove_duplicate_empty, {}),
         
         #(split_fr_en, {})

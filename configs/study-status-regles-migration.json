@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "EnActiviteFR",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "EnActiviteFR",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "EnActiviteFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "EnActiviteEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}
