@@ -26,6 +26,7 @@ from .add_nations import add_nations
 from .align_study_status import align_study_status
 from .add_authorizing_agency import add_authorizing_agency
 from .add_metadata_contributors import add_metadata_contributor
+from .add_third_party_source import add_third_party_source
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -58,6 +59,7 @@ __all__ = [
     "align_study_status",
     "add_authorizing_agency",
     "add_metadata_contributor",
+    "add_third_party_source",
     "split_fr_en"
 
 ]

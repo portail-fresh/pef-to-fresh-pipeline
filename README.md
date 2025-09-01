@@ -63,7 +63,8 @@ The current implementation of the pipeline executes the following tasks:
 | 23       | PEF>PEF+ | Add nations involved in the study, together with ISO-3166 codes                                            | `add_nations.py`                         |
 | 24       | PEF>PEF+ | Update authorizing agencies list                                                                           | `add_authorizing_agency.py`              |
 | 25       | PEF>PEF+ | Add the name of the person that created/edited the metadata sheet                                          | `add_metadata_contributors.py`           |
-| 26       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
+| 26       | PEF>PEF+ | Declare third party source for studies that used medico-administrative sources                             | `add_third_party_source.py`           |
+| 27       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.
