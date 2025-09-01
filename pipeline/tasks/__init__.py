@@ -24,6 +24,7 @@ from .add_provenance import add_provenance
 from .add_pathologies import add_pathologies
 from .add_nations import add_nations
 from .align_study_status import align_study_status
+from .add_authorizing_agency import add_authorizing_agency
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -54,6 +55,7 @@ __all__ = [
     "add_pathologies",
     "add_nations",
     "align_study_status",
+    "add_authorizing_agency",
     "split_fr_en"
 
 ]
