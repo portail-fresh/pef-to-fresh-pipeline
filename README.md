@@ -7,7 +7,7 @@ This pipeline automates data cleaning and reformatting tasks, ensuring compatibi
 
 ## Source Data
 
-The Portail Epidémiologie France (PEF) catalog includes **1,099** bilingual records (French and English). Of these, **22** were excluded from the migration to the FReSH catalog: **20** belong to the medico-administrative domain and fall outside the scope of FReSH, while **2** are duplicates of other published studies in PEF.
+The Portail Epidémiologie France (PEF) catalog includes **1,099** bilingual records (French and English). Of these, **24** were excluded from the migration to the FReSH catalog: **20** belong to the medico-administrative domain and fall outside the scope of FReSH, while **2** are duplicates of other published studies in PEF.
 
 PEF contributors were asked to update their metadata records by **May 26, 2025**. Updates submitted after this date were not considered in the migration process.
 
@@ -67,7 +67,8 @@ The current implementation of the pipeline executes the following tasks:
 | 27       | PEF>PEF+ | Declare third party source for studies that used medico-administrative sources                             | `add_third_party_source.py`              |
 | 28       | PEF>PEF+ | Add types for funding agencies (public, private, ...)                                                      | `add_funding_type.py`                    |
 | 29       | PEF>PEF+ | Update sponsor's information (name, type, ID)                                                              | `update_sponsor.py`                      |
-| 30       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
+| 30       | PEF>PEF+ | Add CESSDA sampling procedures                                                                             | `add_sampling_procedure.py`              |
+| 31       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.
