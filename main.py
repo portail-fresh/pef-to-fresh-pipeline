@@ -53,7 +53,7 @@ def run_pipeline():
         #(align_study_status,{}),
         (add_fresh_enrichment_namespace, {}),
         #(add_fresh_identifier, {}),
-        #(process_inclusion_criteria, {}),
+        (process_inclusion_criteria, {}),
         #(dispatch_data_access, {}),
         #(update_contacts, {}),
         #(add_collection_mode_categories, {}),
@@ -68,7 +68,7 @@ def run_pipeline():
         #(add_third_party_source,{}),
         #(add_funding_type,{}),
         #(update_sponsor,{}),
-        (add_sampling_procedure,{}),
+        #(add_sampling_procedure,{}),
         #(remove_duplicate_empty, {}),
         
         #(split_fr_en, {})

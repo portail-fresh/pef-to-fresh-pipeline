@@ -42,7 +42,7 @@ def process_inclusion_criteria(xml_file: str, input_folder: str, output_folder: 
             return
 
         # Path to Excel file (assumed to be in working directory)
-        excel_path = "export-exclusion-criteria-fr.xlsx"
+        excel_path = "new-clusion.xlsx"
 
         transformer = FieldTransformer(excel_path=excel_path, file_id=file_id, changelog=changelog, task_name=task_name)
         updated_tree = transformer.apply_transformations(tree)

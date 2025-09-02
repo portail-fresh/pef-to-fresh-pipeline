@@ -1,0 +1,43 @@
+{
+  "file_id_column": "ID_PEF",
+  "operations": [
+    {
+      "type": "delete",
+      "from": {
+        "xpath": "CriteresInclusionFR"
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "INCLUSION-FR",
+        "xpath": "InclusionCriterionFR",
+        "is_fresh": true
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "EXCLUSION-FR",
+        "xpath": "ExclusionCriterionFR",
+        "is_fresh": true
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "INCLUSION-EN",
+        "xpath": "InclusionCriterionEN",
+        "is_fresh": true
+      }
+    },
+    {
+      "type": "add",
+      "to": {
+        "col": "EXCLUSION-EN",
+        "xpath": "ExclusionCriterionEN",
+        "is_fresh": true
+      }
+    }
+  ]
+}
