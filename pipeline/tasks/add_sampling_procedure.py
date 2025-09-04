@@ -89,11 +89,6 @@ def add_sampling_procedure(xml_file: str, input_folder: str, output_folder: str,
                         },
                     )
 
-                if logger:
-                    logger.info(
-                        "Added sampling mode FR='%s', EN='%s' to file %s", 
-                        row["ChampFReSH_fr"], row["ChampFReSH_en"], xml_file
-                    )
 
         # save updated xml
         output_path.parent.mkdir(parents=True, exist_ok=True)

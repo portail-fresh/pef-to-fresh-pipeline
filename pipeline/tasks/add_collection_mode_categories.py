@@ -1,12 +1,13 @@
 from pathlib import Path
 from lxml import etree
-from pipeline.utils.FieldTransformer import FieldTransformer
+import pandas as pd
+from os.path import join
+
+FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"
 
 def add_collection_mode_categories(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
-    Adds collection modes categories to the given XML file
-    using 'add-collection-mode-categories.xlsx' as mapping table. This replaces PEF values
-    with FReSH values inside <ContenuBiothequeFR> nodes.
+    Adds SamplingModeFR and SamplingModeEN elements to the XML based on an Excel mapping.
 
     Args:
         xml_file (str): XML file name.
@@ -16,8 +17,10 @@ def add_collection_mode_categories(xml_file: str, input_folder: str, output_fold
     """
     try:
         logger = context.get_logger() if context else None
+        changelog = context.get_changelog(xml_file) if context else None
+
         if logger:
-            logger.info("Starting health determinants transformation for file: %s", xml_file)
+            logger.info("Starting sampling mode update for file: %s", xml_file)
 
         input_path = Path(input_folder) / xml_file
         output_path = Path(output_folder) / xml_file
@@ -27,42 +30,75 @@ def add_collection_mode_categories(xml_file: str, input_folder: str, output_fold
                 logger.error("Input file '%s' does not exist. Skipping.", input_path)
             return
 
+        # parse xml
         try:
             tree = etree.parse(str(input_path))
+            root = tree.getroot()
         except etree.XMLSyntaxError as e:
             if logger:
                 logger.error("Failed to parse '%s': %s", xml_file, e)
             return
 
-        changelog = context.get_changelog(xml_file) if context else None
-        if changelog is None:
+        # get file id
+        file_id = xml_file.split("_")[0]
+
+        # read excel mapping
+        tables_folder = context.get_conversion_tables_folder()
+        excel_path = join(tables_folder, 'new-collection-modes.xlsx')
+        df = pd.read_excel(excel_path, dtype=str).fillna("")
+
+        modes = df[df["PEF_ID"] == file_id]
+
+        if modes.empty:
             if logger:
-                logger.error("No changelog found for '%s'. Skipping.", xml_file)
-            return
+                logger.info("No sampling modes found for file_id %s", file_id)
+        else:
+            def make_elem(tag, text=None, attrib=None):
+                """Helper to create namespaced element with optional text and attributes"""
+                el = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}{tag}", attrib=attrib or {})
+                if text:
+                    el.text = text
+                return el
 
-        # file_id non utilizzato in modalità general
-        file_id = xml_file.split('_')[0]
+            for _, row in modes.iterrows():
+                # SamplingModeFR
+                fr_el = make_elem(
+                    "CollectionModeFR", 
+                    text=row["ChampFReSH_fr"], 
+                    attrib={"uri": row["URI_CESSDA"]} if row["URI_CESSDA"] else {}
+                )
+                root.append(fr_el)
 
-        excel_path = "add-collection-mode-categories.xlsx"
-        task_name = "add_collection_mode_categories"
+                # SamplingModeEN
+                en_el = make_elem(
+                    "CollectionModeEN", 
+                    text=row["ChampFReSH_en"], 
+                    attrib={"uri": row["URI_CESSDA"]} if row["URI_CESSDA"] else {}
+                )
+                root.append(en_el)
 
-        transformer = FieldTransformer(
-            excel_path=excel_path,
-            file_id=file_id,
-            changelog=changelog,
-            task_name=task_name,
-        )
+                # log add
+                if changelog is not None:
+                    changelog.log_add(
+                        task="update_sampling_mode",
+                        field="CollectionMode",
+                        new_value={
+                            "CollectionModeFR": row["ChampFReSH_fr"],
+                            "CollectionEN": row["ChampFReSH_en"],
+                            "URI": row["URI_CESSDA"] if row["URI_CESSDA"] else None,
+                        },
+                    )
 
-        updated_tree = transformer.apply_transformations(tree)
 
+
+        # save updated xml
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        updated_tree.write(str(output_path), pretty_print=True, encoding="utf-8", xml_declaration=True)
+        tree.write(str(output_path), pretty_print=True, encoding="utf-8", xml_declaration=True)
 
         if logger:
-            logger.info("Successfully applied health determinants transformation and saved: %s", output_path)
+            logger.info("Successfully updated collection modes and saved: %s", output_path)
 
     except Exception as e:
-        logger = context.get_logger() if context else None
         if logger:
             logger.error("Unexpected error while processing '%s': %s", xml_file, e)
         raise
