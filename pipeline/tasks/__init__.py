@@ -30,6 +30,7 @@ from .add_third_party_source import add_third_party_source
 from .add_funding_type import add_funding_type
 from .update_sponsor import update_sponsor
 from .add_sampling_procedure import add_sampling_procedure
+from .update_en_version import update_en_version
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -66,6 +67,7 @@ __all__ = [
     "add_funding_type",
     "update_sponsor",
     "add_sampling_procedure",
+    "update_en_version",
     "split_fr_en"
 
 ]

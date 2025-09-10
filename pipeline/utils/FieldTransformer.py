@@ -308,29 +308,61 @@ class FieldTransformer:
 
     def _apply_update(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
         """
-        Updates existing values in the XML that match the 'from' value, replacing them with 'to'.
+        Updates existing values in the XML.
+        - If 'from.col' is present: replaces occurrences of that value with the new one.
+        - If 'from.col' is missing: takes the first value found in 'from.xpath' and replaces it if different.
 
         Args:
             op (Dict[str, Any]): Update operation definition.
             root (etree._Element): Root XML element.
             row (pd.Series): Row from the Excel table.
         """
-        from_val_raw = row.get(op["from"]["col"])
+        # Get the "to" value (must always exist)
         to_val_raw = row.get(op["to"]["col"])
-        if pd.isna(from_val_raw) or pd.isna(to_val_raw):
+        if pd.isna(to_val_raw):
+            return
+        to_val = self._sanitize_for_xml(to_val_raw)
+
+        xpath_to = self._normalize_xpath(op["to"]["xpath"])
+        nodes_to = root.xpath(xpath_to)
+        if not nodes_to:
             return
 
-        from_val = self._sanitize_for_xml(from_val_raw)
-        to_val = self._sanitize_for_xml(to_val_raw)
-        xpath = self._normalize_xpath(op["to"]["xpath"])
-        nodes = root.xpath(xpath)
+        # CASE 1: "from" has col -> use Excel
+        if "col" in op["from"]:
+            from_val_raw = row.get(op["from"]["col"])
+            if pd.isna(from_val_raw):
+                return
+            from_val = self._sanitize_for_xml(from_val_raw)
 
-        for node in nodes:
-            for val_node in self._extract_value_nodes(node):
-                old_val = self._sanitize_for_xml(val_node.text or "")
-                if old_val.lower() == from_val.lower() and old_val.lower() != to_val.lower():
-                    val_node.text = to_val
-                    self.changelog.log_update(self.task_name, xpath, old_val, to_val)
+            for node in nodes_to:
+                for val_node in self._extract_value_nodes(node):
+                    old_val = self._sanitize_for_xml(val_node.text or "")
+                    if old_val.lower() == from_val.lower() and old_val.lower() != to_val.lower():
+                        val_node.text = to_val
+                        self.changelog.log_update(self.task_name, xpath_to, old_val, to_val)
+
+        # CASE 2: "from" has no col -> use first value found in from.xpath
+        else:
+            xpath_from = self._normalize_xpath(op["from"]["xpath"])
+            nodes_from = root.xpath(xpath_from)
+            if not nodes_from:
+                return
+
+            # prendo la prima occorrenza utile
+            first_node = nodes_from[0]
+            first_val_nodes = self._extract_value_nodes(first_node)
+            if not first_val_nodes:
+                return
+
+            old_val = self._sanitize_for_xml(first_val_nodes[0].text or "")
+            if old_val.lower() != to_val.lower():
+                # aggiorna tutti i nodi target
+                for node in nodes_to:
+                    for val_node in self._extract_value_nodes(node):
+                        val_node.text = to_val
+                self.changelog.log_update(self.task_name, xpath_to, old_val, to_val)
+
 
     def _apply_add(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
         """

@@ -1,0 +1,302 @@
+{
+    "file_id_column": "ID",
+    "operations": [
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "NomFR"
+            },
+            "to": {
+                "xpath": "NomFR",
+                "col": "NomFR"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DomainesMedicauxPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DomainesMedicauxPrecisionsEN",
+                "col": "DomainesMedicauxPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "FinancementsPrecisionsEN"
+            },
+            "to": {
+                "xpath": "FinancementsPrecisionsEN",
+                "col": "FinancementsPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "ModaliteConstitutionEchantillonEN"
+            },
+            "to": {
+                "xpath": "ModaliteConstitutionEchantillonEN",
+                "col": "ModaliteConstitutionEchantillonEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "ObjectifGeneralEN"
+            },
+            "to": {
+                "xpath": "ObjectifGeneralEN",
+                "col": "ObjectifGeneralEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "ChampGeographiquePrecisionsEN"
+            },
+            "to": {
+                "xpath": "ChampGeographiquePrecisionsEN",
+                "col": "ChampGeographiquePrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "AnneePremierRecueilEN"
+            },
+            "to": {
+                "xpath": "AnneePremierRecueilEN",
+                "col": "AnneePremierRecueilEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "AnneeDernierRecueilEN"
+            },
+            "to": {
+                "xpath": "AnneeDernierRecueilEN",
+                "col": "AnneeDernierRecueilEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "TailleBaseDetailEN"
+            },
+            "to": {
+                "xpath": "TailleBaseDetailEN",
+                "col": "TailleBaseDetailEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "ModalitesDeRecueilEN"
+            },
+            "to": {
+                "xpath": "ModalitesDeRecueilEN",
+                "col": "ModalitesDeRecueilEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "NomenclatureEN"
+            },
+            "to": {
+                "xpath": "NomenclatureEN",
+                "col": "NomenclatureEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesAdministrativesPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesAdministrativesPrecisionsEN",
+                "col": "DonneesAdministrativesPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "SourcesAdministrativesPrecisionsEN"
+            },
+            "to": {
+                "xpath": "SourcesAdministrativesPrecisionsEN",
+                "col": "SourcesAdministrativesPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "AutreParametreObserveEN"
+            },
+            "to": {
+                "xpath": "AutreParametreObserveEN",
+                "col": "AutreParametreObserveEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DetailDuSuiviEN"
+            },
+            "to": {
+                "xpath": "DetailDuSuiviEN",
+                "col": "DetailDuSuiviEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "AutresCollaborationsEN"
+            },
+            "to": {
+                "xpath": "AutresCollaborationsEN",
+                "col": "AutresCollaborationsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesCliniquesPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesCliniquesPrecisionsEN",
+                "col": "DonneesCliniquesPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesParacliniquesPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesParacliniquesPrecisionsEN",
+                "col": "DonneesParacliniquesPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "ProcedureQualiteEN"
+            },
+            "to": {
+                "xpath": "ProcedureQualiteEN",
+                "col": "ProcedureQualiteEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesBiologiquesPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesBiologiquesPrecisionsEN",
+                "col": "DonneesBiologiquesPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesDeclarativesPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesDeclarativesPrecisionsEN",
+                "col": "DonneesDeclarativesPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "LabellisationsEtExpertisesEN"
+            },
+            "to": {
+                "xpath": "LabellisationsEtExpertisesEN",
+                "col": "LabellisationsEtExpertisesEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "QualiteDeVieSantePercueEN"
+            },
+            "to": {
+                "xpath": "QualiteDeVieSantePercueEN",
+                "col": "QualiteDeVieSantePercueEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "BaseOuRegistrePrecisionsEN"
+            },
+            "to": {
+                "xpath": "BaseOuRegistrePrecisionsEN",
+                "col": "BaseOuRegistrePrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesCoutPrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesCoutPrecisionsEN",
+                "col": "DonneesCoutPrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "DonneesUtilitePrecisionsEN"
+            },
+            "to": {
+                "xpath": "DonneesUtilitePrecisionsEN",
+                "col": "DonneesUtilitePrecisionsEN"
+            }
+        },
+        {
+            "type": "update",
+            "enabled": true,
+            "from": {
+                "xpath": "TypeDeBaseAutreEN"
+            },
+            "to": {
+                "xpath": "TypeDeBaseAutreEN",
+                "col": "TypeDeBaseAutreEN"
+            }
+        }
+    ]
+}
