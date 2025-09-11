@@ -2,24 +2,29 @@ from os.path import join
 from lxml import etree
 import pandas as pd
 
-
 ELEMENTS_TO_REMOVE = ["ResponsableScientifique", "ContactSupplementaire"] 
 FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"
+
+def _clean_value(val: str) -> str:
+    """
+    Normalizza i valori provenienti dall'Excel:
+    - converte in stringa
+    - elimina spazi
+    - elimina 'null', 'nan' e stringhe vuote
+    """
+    if val is None:
+        return ""
+    s = str(val).strip()
+    if not s or s.lower() in {"null", "nan"}:
+        return ""
+    return s
 
 def update_contacts(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
     Updates contacts in the XML file:
       1. Removes existing contact-related elements listed in ELEMENTS_TO_REMOVE.
       2. Adds new contacts from the given Excel file (filtered by ID Fiche).
-    
-    Args:
-        xml_file: The name of the XML file to modify.
-        input_folder: Folder containing the XML file.
-        output_folder: Folder to write the updated XML file.
-        context (optional): Shared context object containing changelog, logger, etc.
-    
-    Returns:
-        Path to the updated XML file.
+      3. Adds Affiliation field (from Organisme, fallback to Laboratoire).
     """
     logger = context.get_logger() if context else None
     try:
@@ -42,10 +47,9 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
             for child in list(parent):
                 tag_without_ns = etree.QName(child).localname
                 if tag_without_ns in ELEMENTS_TO_REMOVE:
-                    # Log leaf text values once
                     for leaf in child.iter():
-                        if len(leaf) == 0 and leaf.text and leaf.text.strip():
-                            value = leaf.text.strip()
+                        if len(leaf) == 0 and leaf.text and _clean_value(leaf.text):
+                            value = _clean_value(leaf.text)
                             if value not in logged_values:
                                 logged_values.add(value)
                                 if changelog:
@@ -58,7 +62,8 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
 
         # Get Excel mapping path
         tables_folder = context.get_conversion_tables_folder()
-        excel_path = join(tables_folder, 'ContatsID_VF.xlsx')
+        excel_path = join(tables_folder, 'ContatsID_affiliation.xlsx')
+
         # --- STEP 2: load Excel and filter rows ---
         df = pd.read_excel(excel_path, dtype=str).fillna("")
         file_id = xml_file.split("_")[0]  # prima parte del nome file
@@ -73,11 +78,12 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
             nsmap["fresh"] = FRESH_NAMESPACE_URI
 
         for _, row in df_file.iterrows():
-            role = row["Role"].strip()
-            name = row["Prénom Nom"].strip()
-            mail = row["Mail"].strip() 
-            orcid = row.get("OrcidFinal", "").strip()
-            idref = row.get("IdRefFinal", "").strip()
+            role = _clean_value(row["Role"])
+            name = _clean_value(row["Prénom Nom"])
+            mail = _clean_value(row["Mail"])
+            orcid = _clean_value(row.get("OrcidFinal", ""))
+            idref = _clean_value(row.get("IdRefFinal", ""))
+            affiliation = _clean_value(row.get("Organisme", "")) or _clean_value(row.get("Laboratoire", ""))
 
             # === PrimaryInvestigator / Contributor ===
             if role == "PI":
@@ -90,6 +96,12 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                 name_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}ContributorName")
                 name_elem.text = name
                 contact_elem.append(name_elem)
+
+            # --- add Affiliation if available ---
+            if affiliation:
+                aff_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}Affiliation")
+                aff_elem.text = affiliation
+                contact_elem.append(aff_elem)
 
             # Add PersonPID(s)
             if orcid:
@@ -115,8 +127,8 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
 
             if changelog:
                 for leaf in contact_elem.iter():
-                    if len(leaf) == 0 and leaf.text and leaf.text.strip():
-                        changelog.log_add(task_name, field=etree.QName(leaf).localname, new_value=leaf.text.strip())
+                    if len(leaf) == 0 and _clean_value(leaf.text):
+                        changelog.log_add(task_name, field=etree.QName(leaf).localname, new_value=_clean_value(leaf.text))
 
             # === ContactPoint (same level, if mail exists) ===
             if mail:
@@ -126,12 +138,18 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                 cp_mail = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}EMail")
                 cp_mail.text = mail
                 cp_elem.extend([cp_name, cp_mail])
+
+                if affiliation:
+                    cp_aff = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}Affiliation")
+                    cp_aff.text = affiliation
+                    cp_elem.append(cp_aff)
+
                 root.append(cp_elem)
 
                 if changelog:
                     for leaf in cp_elem.iter():
-                        if len(leaf) == 0 and leaf.text and leaf.text.strip():
-                            changelog.log_add(task_name, field=etree.QName(leaf).localname, new_value=leaf.text.strip())
+                        if len(leaf) == 0 and _clean_value(leaf.text):
+                            changelog.log_add(task_name, field=etree.QName(leaf).localname, new_value=_clean_value(leaf.text))
 
         # --- STEP 4: write output ---
         output_path = join(output_folder, xml_file)
