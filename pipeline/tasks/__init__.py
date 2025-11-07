@@ -31,6 +31,9 @@ from .add_funding_type import add_funding_type
 from .update_sponsor import update_sponsor
 from .add_sampling_procedure import add_sampling_procedure
 from .update_en_version import update_en_version
+from .update_study_status import update_study_status
+from .update_fundings import update_fundings
+from .add_parent_category import add_parent_category
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -68,6 +71,9 @@ __all__ = [
     "update_sponsor",
     "add_sampling_procedure",
     "update_en_version",
+    "update_study_status",
+    "update_fundings",
+    "add_parent_category",
     "split_fr_en"
 
 ]

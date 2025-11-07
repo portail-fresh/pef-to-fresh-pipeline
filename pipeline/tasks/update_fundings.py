@@ -5,7 +5,7 @@ from os.path import join
 
 FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"
 
-def update_sponsor(xml_file: str, input_folder: str, output_folder: str, context=None):
+def update_fundings(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
     Adds Sponsor elements to the XML based on the mapping provided in an Excel file.
 
@@ -44,7 +44,7 @@ def update_sponsor(xml_file: str, input_folder: str, output_folder: str, context
         file_id = xml_file.split("_")[0]
 
         tables_folder = context.get_conversion_tables_folder()
-        excel_path = join(tables_folder, 'OK_StatutOrganismeSplit.xlsx')
+        excel_path = join(tables_folder, 'OK-Financeurs.xlsx')
         df = pd.read_excel(excel_path, dtype=str).fillna("")
 
         sponsors = df[df["ID"] == file_id]
@@ -61,24 +61,24 @@ def update_sponsor(xml_file: str, input_folder: str, output_folder: str, context
                 return el
 
             for _, row in sponsors.iterrows():
-                sponsor_el = make_elem("Sponsor")
+                sponsor_el = make_elem("FundingAgent")
 
-                sponsor_el.append(make_elem("SponsorName", row["FReSH_Organisme"]))
-                sponsor_el.append(make_elem("SponsorTypeFR", row["SponsorType_fr"]))
-                sponsor_el.append(make_elem("SponsorTypeEN", row["SponsorType_en"]))
+                sponsor_el.append(make_elem("FundingAgentName", row["FinanceurNorm"]))
+                sponsor_el.append(make_elem("FundingAgentTypeFR", row["Statut_FR"]))
+                sponsor_el.append(make_elem("FundingAgentTypeEN", row["Statut_EN"]))
 
                 # PID ROR
                 if row["ROR"]:
-                    pid_el = make_elem("SponsorPID")
+                    pid_el = make_elem("FundingAgentPID")
                     pid_el.append(make_elem("URL", row["ROR"]))
                     pid_el.append(make_elem("PIDSchema", "ROR"))
                     sponsor_el.append(pid_el)
 
                 # PID SIRET
-                if row["SIRET"]:
-                    pid_el = make_elem("SponsorPID")
-                    pid_el.append(make_elem("URL", row["SIRET"]))
-                    pid_el.append(make_elem("PIDSchema", "SIRET"))
+                if row["SIREN"]:
+                    pid_el = make_elem("FundingAgentPID")
+                    pid_el.append(make_elem("URL", row["SIREN"]))
+                    pid_el.append(make_elem("PIDSchema", "SIREN"))
                     sponsor_el.append(pid_el)
 
                 # aggiungi sponsor al root
@@ -87,19 +87,19 @@ def update_sponsor(xml_file: str, input_folder: str, output_folder: str, context
                 # log add
                 if changelog is not None:
                     changelog.log_add(
-                        task="update_sponsor",
-                        field="Sponsor",
+                        task="update_funding",
+                        field="FundingAgent",
                         new_value={
-                            "SponsorName": row["FReSH_Organisme"],
-                            "SponsorTypeFR": row["SponsorType_fr"],
-                            "SponsorTypeEN": row["SponsorType_en"],
+                            "FundingAgentName": row["FinanceurNorm"],
+                            "FundingAgentTypeFR": row["Statut_FR"],
+                            "FundingAgentTypeEN": row["Statut_EN"],
                             "ROR": row["ROR"] if row["ROR"] else None,
-                            "SIRET": row["SIRET"] if row["SIRET"] else None,
+                            "SIRET": row["SIREN"] if row["SIREN"] else None,
                         },
                     )
 
                 if logger:
-                    logger.info("Added sponsor '%s' to file %s", row["FReSH_Organisme"], xml_file)
+                    logger.info("Added funding '%s' to file %s", row["FinanceurNorm"], xml_file)
 
         # salva
         output_path.parent.mkdir(parents=True, exist_ok=True)

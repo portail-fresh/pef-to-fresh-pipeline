@@ -303,6 +303,214 @@ class FieldTransformer:
                 )
             # Mark operation as logged to avoid duplicate logs in subsequent iterations
             self._replace_set_logged = True
+            
+    
+
+
+            
+    def _apply_update_quasi(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
+        """
+        Update XML nodes based on Excel mappings, supporting multiple target values.
+
+        If 'from.col' appears multiple times in the Excel table with different 'to.col' values,
+        all corresponding values are appended to the target node, replacing the old values.
+
+        Steps:
+            1. Collect all <value> children from target nodes to log old values.
+            2. Remove existing <value> children from target nodes.
+            3. Append all mapped values from Excel for the current source.
+            4. Log each update for each old-new combination.
+
+        Args:
+            op (Dict[str, Any]): Operation definition from config JSON.
+            root (etree._Element): Root XML element to modify.
+            row (pd.Series): Current Excel row (used for fallback if from.col not defined).
+        """
+        to_col = op["to"]["col"]
+        xpath_to = self._normalize_xpath(op["to"]["xpath"])
+
+        # ----------------------------------------------------------------------
+        # CASE 1 — 'from.col' is defined: use Excel mapping
+        # ----------------------------------------------------------------------
+        if "col" in op["from"]:
+            from_col = op["from"]["col"]
+            nodes_to = root.xpath(xpath_to)
+            if not nodes_to:
+                return
+
+            for node in nodes_to:
+                # Collect old values for logging
+                old_vals = [self._sanitize_for_xml(v.text or "") for v in self._extract_value_nodes(node)]
+                if not old_vals:
+                    continue
+
+                # Find all Excel rows matching any old value
+                mapped_values = []
+                for old_val in old_vals:
+                    matches = self.df[self.df[from_col].astype(str).str.lower() == old_val.lower()]
+                    mapped_values.extend([
+                        self._sanitize_for_xml(v)
+                        for v in matches[to_col].astype(str).tolist()
+                        if self._is_significant(str(v))
+                    ])
+
+                if not mapped_values:
+                    continue
+
+                # Remove all existing <value> children
+                for child in list(node):
+                    if child.tag == "value":
+                        node.remove(child)
+
+                # Append all mapped values
+                for new_val in mapped_values:
+                    new_elem = etree.Element("value")
+                    new_elem.text = new_val
+                    node.append(new_elem)
+                    # Log each old-new combination
+                    for old_val in old_vals:
+                        self.changelog.log_update(self.task_name, xpath_to, old_val, new_val)
+
+        # ----------------------------------------------------------------------
+        # CASE 2 — 'from.col' is not defined: fallback to XPath-only replacement
+        # ----------------------------------------------------------------------
+        else:
+            to_val_raw = row.get(to_col)
+            if pd.isna(to_val_raw):
+                return
+            to_val = self._sanitize_for_xml(to_val_raw)
+
+            xpath_from = self._normalize_xpath(op["from"]["xpath"])
+            nodes_from = root.xpath(xpath_from)
+            nodes_to = root.xpath(xpath_to)
+            if not nodes_from or not nodes_to:
+                return
+
+            first_node = nodes_from[0]
+            first_val_nodes = self._extract_value_nodes(first_node)
+            if not first_val_nodes:
+                return
+
+            old_val = self._sanitize_for_xml(first_val_nodes[0].text or "")
+            if old_val.lower() != to_val.lower():
+                for node in nodes_to:
+                    # Remove all existing <value> children
+                    for val_node in list(node):
+                        node.remove(val_node)
+                    # Append the new value
+                    new_elem = etree.Element("value")
+                    new_elem.text = to_val
+                    node.append(new_elem)
+                self.changelog.log_update(self.task_name, xpath_to, old_val, to_val)
+
+
+
+    
+
+
+
+
+    def _apply_update_new(self, op: Dict[str, Any], root: etree._Element, row: pd.Series):
+        """
+        Enhanced update operation:
+        - If 'from.col' appears multiple times in the Excel mapping table with different 'to.col' values,
+        replaces the old <value> elements with all corresponding mapped values.
+        - Maintains the original logic and logging behavior otherwise.
+
+        Steps:
+            1. Collect all 'to' values for matching 'from.col' values in Excel.
+            2. Remove existing <value> children in the target XPath nodes.
+            3. Append one new <value> element per mapped value.
+            4. Log each replacement in the changelog.
+
+        Args:
+            op (Dict[str, Any]): Operation configuration.
+            root (etree._Element): Root XML element.
+            row (pd.Series): Current Excel row (used for fallback when from.col not defined).
+        """
+        to_col = op["to"]["col"]
+        xpath_to = self._normalize_xpath(op["to"]["xpath"])
+
+        # ----------------------------------------------------------------------
+        # CASE 1 — Mapping based on Excel 'from.col' values
+        # ----------------------------------------------------------------------
+        if "col" in op["from"]:
+            from_col = op["from"]["col"]
+
+            # Get all target nodes
+            nodes_to = root.xpath(xpath_to)
+            if not nodes_to:
+                return
+
+            for node in nodes_to:
+                for val_node in self._extract_value_nodes(node):
+                    old_val = self._sanitize_for_xml(val_node.text or "")
+                    if not old_val:
+                        continue
+
+                    # Find all Excel rows where 'from.col' matches this XML value
+                    matches = self.df[self.df[from_col].astype(str).str.lower() == old_val.lower()]
+                    if matches.empty:
+                        continue
+
+                    # Collect all corresponding 'to' values
+                    mapped_values = [
+                        self._sanitize_for_xml(v)
+                        for v in matches[to_col].astype(str).tolist()
+                        if self._is_significant(str(v))
+                    ]
+                    if not mapped_values:
+                        continue
+
+                    # --- Replace existing child <value> elements ---
+                    parent = val_node.getparent() or node
+                    # Remove all child <value> elements (complete replacement)
+                    for child in list(parent):
+                        if child.tag == "value":
+                            parent.remove(child)
+
+                    # Append new <value> elements
+                    for new_val in mapped_values:
+                        new_elem = etree.Element("value")
+                        new_elem.text = new_val
+                        parent.append(new_elem)
+                        self.changelog.log_update(
+                            self.task_name,
+                            xpath_to,
+                            old_val,
+                            new_val
+                        )
+
+        # ----------------------------------------------------------------------
+        # CASE 2 — 'from.col' not defined → fallback to XPath-based update
+        # ----------------------------------------------------------------------
+        else:
+            to_val_raw = row.get(to_col)
+            if pd.isna(to_val_raw):
+                return
+            to_val = self._sanitize_for_xml(to_val_raw)
+
+            xpath_from = self._normalize_xpath(op["from"]["xpath"])
+            nodes_from = root.xpath(xpath_from)
+            nodes_to = root.xpath(xpath_to)
+            if not nodes_from or not nodes_to:
+                return
+
+            first_node = nodes_from[0]
+            first_val_nodes = self._extract_value_nodes(first_node)
+            if not first_val_nodes:
+                return
+
+            old_val = self._sanitize_for_xml(first_val_nodes[0].text or "")
+            if old_val.lower() != to_val.lower():
+                for node in nodes_to:
+                    # Replace all children with a single new value
+                    for val_node in list(node):
+                        node.remove(val_node)
+                    new_elem = etree.Element("value")
+                    new_elem.text = to_val
+                    node.append(new_elem)
+                self.changelog.log_update(self.task_name, xpath_to, old_val, to_val)
 
 
 
