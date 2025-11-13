@@ -45,11 +45,11 @@ def add_research_type(xml_file: str, input_folder: str, output_folder: str, cont
 
         # Create and append <fresh:ResearchTypeFR>
         elem_fr = etree.Element(tag_fr, nsmap=nsmap)
-        elem_fr.text = "Observationnelle"
+        elem_fr.text = "Etude observationnelle"
         root.append(elem_fr)
-        logger.info("Added <fresh:ResearchTypeFR> with value 'Observationnelle'")
+        logger.info("Added <fresh:ResearchTypeFR> with value 'Etude observationnelle'")
         if changelog:
-            changelog.log_add(task_name, field="fresh:ResearchTypeFR", new_value="Observationnelle")
+            changelog.log_add(task_name, field="fresh:ResearchTypeFR", new_value="Etude observationnelle")
 
         # Create and append <fresh:ResearchTypeEN>
         elem_en = etree.Element(tag_en, nsmap=nsmap)

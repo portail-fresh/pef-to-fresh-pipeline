@@ -34,4 +34,4 @@ def correct_special_characters(xml_file: str, input_folder: str, output_folder: 
 
     except Exception as e:
         logger.error("An error occurred while processing the file %s: %s", xml_file, e)
-        raise  # Re-raise per mantenere il tracking dell'errore in Prefect UI
+        raise  e# Re-raise per mantenere il tracking dell'errore in Prefect UI

@@ -1,0 +1,29 @@
+{
+  "mode": "general",
+  "operations": [
+    {
+      "type": "update",
+      "enabled": true,
+      "from": {
+        "xpath": "TranchesAgeFR",
+        "col": "ValeursPEF"
+      },
+      "to": {
+        "xpath": "TranchesAgeFR",
+        "col": "Valeurs FReSH"
+      }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "TranchesAgeFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "TranchesAgeEN",
+        "col": "FReSHEN"
+      }
+    }
+  ]
+}

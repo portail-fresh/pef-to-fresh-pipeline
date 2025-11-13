@@ -37,7 +37,7 @@ def get_xml_files(folder: str, context: PipelineContext):
         # Filter out files whose first part (before "_") is in the excluded IDs
         xml_files = [
             f for f in all_files
-            if f.endswith('.xml') and f.split('_')[0] not in excluded_ids
+            if f.endswith('.xml') and not f.split('_')[0]  in excluded_ids
         ]
 
         logger.info("Retrieved %d XML files after exclusions", len(xml_files))

@@ -38,6 +38,7 @@ def run_pipeline():
     logger=run_context.get_logger()
     logger.info("Starting XML Modification Flow")
 
+    """
     tasks = [
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
@@ -70,6 +71,12 @@ def run_pipeline():
         (update_sponsor,{}),
         (add_sampling_procedure,{}),
         (add_parent_category,{}),
+        (remove_duplicate_empty, {}),
+        
+        #(split_fr_en, {})
+    ]
+    """
+    tasks = [
         (remove_duplicate_empty, {}),
         
         #(split_fr_en, {})

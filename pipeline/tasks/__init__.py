@@ -34,6 +34,8 @@ from .update_en_version import update_en_version
 from .update_study_status import update_study_status
 from .update_fundings import update_fundings
 from .add_parent_category import add_parent_category
+from .align_age import align_age
+from .align_sex import align_sex
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -74,6 +76,8 @@ __all__ = [
     "update_study_status",
     "update_fundings",
     "add_parent_category",
+    "align_age",
+    "align_sex",
     "split_fr_en"
 
 ]
