@@ -30,7 +30,7 @@ The transformation workflow is organized into three main stages:
 - **PEF+>FReSH**: Schema mapping from the customized PEF+ metadata schema to the FReSH metadata schema.
 
  
-![Graphical representation of the PEF to FReSH transformation steps.](docs/img/pef-transformation-steps.png)
+![Graphical representation of the PEF to FReSH transformation steps.](public/img/pef-transformation-steps.png)
 
 ### Tasks list
 
@@ -114,6 +114,9 @@ __all__ = [
 ]
 
 ```
+
+ 
+![Graphical schema of the pipeline architecture](public/img/pipeline-schema.png)
 
 ### Pipeline execution
 
