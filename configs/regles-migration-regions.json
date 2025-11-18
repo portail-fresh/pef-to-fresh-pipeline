@@ -12,6 +12,18 @@
         "xpath": "RegionsConcerneesFR",
         "col": "Valeurs FReSH"
       }
+    },
+    {
+      "type": "replace_set",
+      "enabled": true,
+      "from": {
+        "xpath": "RegionsConcerneesFR",
+        "col": "Valeurs FReSH"
+      },
+      "to": {
+        "xpath": "RegionsConcerneesEN",
+        "col": "Valeurs FReSH"
+      }
     }
   ]
 }

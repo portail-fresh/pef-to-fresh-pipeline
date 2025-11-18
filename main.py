@@ -38,7 +38,7 @@ def run_pipeline():
     logger=run_context.get_logger()
     logger.info("Starting XML Modification Flow")
 
-    """
+    
     tasks = [
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
@@ -47,6 +47,8 @@ def run_pipeline():
         (align_health_determinants, {}),
         (align_biobank_content, {}),
         (align_data_types, {}),
+        (align_sex,{}),
+        (align_age,{}),
         (align_health_specs, {}),
         (update_recruitment_sources, {}),
         (update_population_types, {}),
@@ -75,12 +77,7 @@ def run_pipeline():
         
         #(split_fr_en, {})
     ]
-    """
-    tasks = [
-        (remove_duplicate_empty, {}),
-        
-        #(split_fr_en, {})
-    ]
+    
 
     current_input_folder = Path(run_context.get_original_folder())
 

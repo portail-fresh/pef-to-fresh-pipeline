@@ -39,37 +39,39 @@ The current implementation of the pipeline executes the following tasks:
 | Task No. | Step     | Task                                                                                                       | Python Function                          |
 | -------- | -------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | 1        | PEF>PEF  | Correct XML files by replacing or removing invalid special characters that prevent parsing with `lxml`     | `correct_special_characters.py`          |
-| 2        | PEF>PEF  | Update / add english version when missing                                                                  | `update_en_version.py`                   |
 | 3        | PEF>PEF  | Correct XML files by replacing or removing invalid special characters, that do not prevent correct parsing | `correct_special_characters_optional.py` |
 | 4        | PEF>PEF  | Format collection dates tags in order to follow a standard format                                          | `process_collection_dates.py`            |
 | 5        | PEF>PEF  | Update french regions' names                                                                               | `update_regions.py`                      |
 | 6        | PEF>PEF  | Update health determinants categories                                                                      | `align_health_determinants.py`           |
 | 7        | PEF>PEF  | Update biobank content categories                                                                          | `align_biobank_content.py`               |
 | 8        | PEF>PEF  | Align data types                                                                                           | `align_data_types.py`                    |
-| 9        | PEF>PEF  | Align health specialties categories                                                                        | `align_health_specs.py`                  |
-| 10       | PEF>PEF  | Update recruitment sources categories                                                                      | `update_recruitment_sources.py`          |
-| 11       | PEF>PEF  | Update population categories, adding people with disabilities                                              | `update_population_types.py`             |
-| 12       | PEF>PEF  | Update study categories for observational studies                                                          | `update_study_categories.py`             |
-| 13       | PEF>PEF  | Update study status categories                                                                             | `align_study_status.py`                  |
-| 14       | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
-| 15       | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
-| 16       | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
-| 17       | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
-| 18       | PEF>PEF+ | Update PIs', team members' and contacts' information                                                       | `update_contacts.py`                     |
-| 19       | PEF>PEF+ | Add CESSDA categories for collection mode                                                                  | `add_collection_mode_categories.py`      |
-| 20       | PEF>PEF+ | Add "Rare diseases" flag for concerned studies                                                             | `add_rare_diseases.py`                   |
-| 21       | PEF>PEF+ | Add NCT identifier for studies listed in ClinicalTrials.gov                                                | `add_nct_identifier.py`                  |
-| 22       | PEF>PEF+ | Add research type label (always "observational study" for PEF records)                                     | `add_research_type.py`                   |
-| 23       | PEF>PEF+ | Add provenance information about the metadata document ("PEF" by default)                                  | `add_provenance.py`                      |
-| 24       | PEF>PEF+ | Add CIM-11 pathologies                                                                                     | `add_pathologies.py`                     |
-| 25       | PEF>PEF+ | Add nations involved in the study, together with ISO-3166 codes                                            | `add_nations.py`                         |
-| 26       | PEF>PEF+ | Update authorizing agencies list                                                                           | `add_authorizing_agency.py`              |
-| 27       | PEF>PEF+ | Add the name of the person that created/edited the metadata sheet                                          | `add_metadata_contributors.py`           |
-| 28       | PEF>PEF+ | Declare third party source for studies that used medico-administrative sources                             | `add_third_party_source.py`              |
-| 29       | PEF>PEF+ | Add types for funding agencies (public, private, ...)                                                      | `add_funding_type.py`                    |
-| 30       | PEF>PEF+ | Update sponsor's information (name, type, ID)                                                              | `update_sponsor.py`                      |
-| 31       | PEF>PEF+ | Add CESSDA sampling procedures                                                                             | `add_sampling_procedure.py`              |
-| 32       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
+| 9        | PEF>PEF  | Align participants' sex controlled vocabulary                                                              | `align_sex.py`                           |
+| 10       | PEF>PEF  | Align participants' age controlled vocabulary                                                              | `align_age.py`                           |
+| 11       | PEF>PEF  | Align health specialties categories                                                                        | `align_health_specs.py`                  |
+| 12       | PEF>PEF  | Update recruitment sources categories                                                                      | `update_recruitment_sources.py`          |
+| 13       | PEF>PEF  | Update population categories, adding people with disabilities                                              | `update_population_types.py`             |
+| 14       | PEF>PEF  | Update study categories for observational studies                                                          | `update_study_categories.py`             |
+| 15       | PEF>PEF  | Update study status categories                                                                             | `align_study_status.py`                  |
+| 16       | PEF>PEF+ | Add `fresh-enrichment` namespace to track custom elements                                                  | `add_fresh_enrichment_namespace.py`      |
+| 17       | PEF>PEF+ | Add FReSH unique identifier following format _"FRESH-PEFXXXXX"_                                            | `add_fresh_identifier.py`                |
+| 18       | PEF>PEF+ | Separate inclusion and exclusion criteria                                                                  | `process_inclusion_criteria.py`          |
+| 19       | PEF>PEF+ | Dispatch data access information from one to multiple custom fields                                        | `dispatch_data_access.py`                |
+| 20       | PEF>PEF+ | Update PIs', team members' and contacts' information                                                       | `update_contacts.py`                     |
+| 21       | PEF>PEF+ | Add CESSDA categories for collection mode                                                                  | `add_collection_mode_categories.py`      |
+| 22       | PEF>PEF+ | Add "Rare diseases" flag for concerned studies                                                             | `add_rare_diseases.py`                   |
+| 23       | PEF>PEF+ | Add NCT identifier for studies listed in ClinicalTrials.gov                                                | `add_nct_identifier.py`                  |
+| 24       | PEF>PEF+ | Add research type label (always "observational study" for PEF records)                                     | `add_research_type.py`                   |
+| 25       | PEF>PEF+ | Add provenance information about the metadata document ("PEF" by default)                                  | `add_provenance.py`                      |
+| 26       | PEF>PEF+ | Add CIM-11 pathologies                                                                                     | `add_pathologies.py`                     |
+| 27       | PEF>PEF+ | Add nations involved in the study, together with ISO-3166 codes                                            | `add_nations.py`                         |
+| 28       | PEF>PEF+ | Update authorizing agencies list                                                                           | `add_authorizing_agency.py`              |
+| 29       | PEF>PEF+ | Add the name of the person that created/edited the metadata sheet                                          | `add_metadata_contributors.py`           |
+| 30       | PEF>PEF+ | Declare third party source for studies that used medico-administrative sources                             | `add_third_party_source.py`              |
+| 31       | PEF>PEF+ | Update funding agencies information and status (public, private, ...)                                      | `add_fundings.py`                        |
+| 32       | PEF>PEF+ | Update sponsor's information (name, type, ID)                                                              | `update_sponsor.py`                      |
+| 33       | PEF>PEF+ | Add CESSDA sampling procedures                                                                             | `add_sampling_procedure.py`              |
+| 34       | PEF>PEF+ | Add parent categories for nested controlled vocabularies categories                                        | `add_parent_category.py`                 |
+| 35       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.
