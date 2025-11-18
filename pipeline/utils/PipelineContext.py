@@ -17,9 +17,14 @@ class PipelineContext:
         
         # Load folder configuration
         self.folder_config = load_config("folders.yaml")
+        self.api_config = load_config("api.yaml")
         self.original_folder = self.folder_config.get('input_files_folder')
         self.runs_folder = self.folder_config.get('runs_folder')
         self.conversion_tables_folder = self.folder_config.get('conversion_tables_folder')
+        self.icd_client_id = self. api_config.get('icd-client-id')
+        self.icd_client_secret = self. api_config.get('icd-client-secret')
+        self.icd_token_endpoint = self. api_config.get('icd-token-endpoint')
+        self.icd_token = None
 
         # Create a unique folder for this run
         datetime_str = "run" + datetime.datetime.now().strftime("-%Y%m%d-%H%M%S")

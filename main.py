@@ -73,10 +73,13 @@ def run_pipeline():
         (update_sponsor,{}),
         (add_sampling_procedure,{}),
         (add_parent_category,{}),
+        (convert_icd_codes_to_uris, {}),
         (remove_duplicate_empty, {}),
         
         #(split_fr_en, {})
     ]
+    
+   
     
 
     current_input_folder = Path(run_context.get_original_folder())
