@@ -71,7 +71,8 @@ The current implementation of the pipeline executes the following tasks:
 | 32       | PEF>PEF+ | Update sponsor's information (name, type, ID)                                                              | `update_sponsor.py`                      |
 | 33       | PEF>PEF+ | Add CESSDA sampling procedures                                                                             | `add_sampling_procedure.py`              |
 | 34       | PEF>PEF+ | Add parent categories for nested controlled vocabularies categories                                        | `add_parent_category.py`                 |
-| 35       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
+| 35       | PEF>PEF+ | Convert ICD-11 codes to URIs                                                                               | `convert_icd_codes_to_uris.py.py`        |
+| 36       | PEF>PEF+ | Clean final XML from duplicate values and empty elements                                                   | `remove_duplicate_empty.py`              |
 
 
 More detailed description of each task is described in the `docs/` folder.
