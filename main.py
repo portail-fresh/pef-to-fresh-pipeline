@@ -81,8 +81,9 @@ def run_pipeline():
     
     tasks = [
         (correct_special_characters, {}),
-        (align_health_specs, {}),
-        (add_id_to_healthspecs,{}),
+        (add_fresh_enrichment_namespace, {}),
+        (add_pathologies, {}),
+        (convert_icd_codes_to_uris, {}),
       
         
         #(split_fr_en, {})
