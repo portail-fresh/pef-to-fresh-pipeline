@@ -49,7 +49,7 @@ def add_provenance(xml_file: str, input_folder: str, output_folder: str, context
         if logger:
             logger.info("Added <fresh:Provenance> with value 'PEF'")
         if changelog:
-            changelog.log_add(task_name, field="fresh:Provenance", new_value="PEF")
+            changelog.log_add(task_name, field="fresh:Provenance", new_value="Portail Épidémiologie France")
 
         # Write output
         output_path = join(output_folder, xml_file)

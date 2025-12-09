@@ -38,6 +38,8 @@ from .align_age import align_age
 from .align_sex import align_sex
 from .convert_icd_codes_to_uris import convert_icd_codes_to_uris
 from .add_id_to_sex import add_id_to_sex
+from .add_id_to_age import add_id_to_age
+from .add_id_to_dataaccess import add_id_to_dataaccess
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -82,6 +84,8 @@ __all__ = [
     "align_sex",
     "convert_icd_codes_to_uris",
     "split_fr_en",
-    "add_id_to_sex"
+    "add_id_to_sex",
+    "add_id_to_age",
+    "add_id_to_dataaccess",
 
 ]
