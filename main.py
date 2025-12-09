@@ -81,9 +81,8 @@ def run_pipeline():
     
     tasks = [
         (correct_special_characters, {}),
-        (add_fresh_enrichment_namespace, {}),
-        (dispatch_data_access, {}),
-        (add_id_to_dataaccess,{}),
+        (align_health_specs, {}),
+        (add_id_to_healthspecs,{}),
       
         
         #(split_fr_en, {})

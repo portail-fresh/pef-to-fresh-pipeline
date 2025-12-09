@@ -40,6 +40,7 @@ from .convert_icd_codes_to_uris import convert_icd_codes_to_uris
 from .add_id_to_sex import add_id_to_sex
 from .add_id_to_age import add_id_to_age
 from .add_id_to_dataaccess import add_id_to_dataaccess
+from .add_id_to_healthspecs import add_id_to_healthspecs
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -87,5 +88,6 @@ __all__ = [
     "add_id_to_sex",
     "add_id_to_age",
     "add_id_to_dataaccess",
+    "add_id_to_healthspecs",
 
 ]
