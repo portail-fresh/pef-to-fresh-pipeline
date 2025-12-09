@@ -21,6 +21,7 @@ class PipelineContext:
         self.original_folder = self.folder_config.get('input_files_folder')
         self.runs_folder = self.folder_config.get('runs_folder')
         self.conversion_tables_folder = self.folder_config.get('conversion_tables_folder')
+        self.vocabs_folder= self.folder_config.get('vocabs_folder')
         self.icd_client_id = self. api_config.get('icd-client-id')
         self.icd_client_secret = self. api_config.get('icd-client-secret')
         self.icd_token_endpoint = self. api_config.get('icd-token-endpoint')
@@ -55,6 +56,9 @@ class PipelineContext:
     
     def get_original_folder(self):
         return self.original_folder
+    
+    def get_vocabs_folder(self):
+        return self.vocabs_folder
 
     def init_changelog_for_file(self, xml_file: str):
         """

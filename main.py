@@ -79,6 +79,15 @@ def run_pipeline():
         #(split_fr_en, {})
     ]
     
+    tasks = [
+        (correct_special_characters, {}),
+        (align_sex,{}),
+        (add_id_to_sex,{}),
+      
+        
+        #(split_fr_en, {})
+    ]
+    
    
     
 

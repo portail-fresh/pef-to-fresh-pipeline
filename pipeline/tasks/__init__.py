@@ -37,6 +37,7 @@ from .add_parent_category import add_parent_category
 from .align_age import align_age
 from .align_sex import align_sex
 from .convert_icd_codes_to_uris import convert_icd_codes_to_uris
+from .add_id_to_sex import add_id_to_sex
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -80,6 +81,7 @@ __all__ = [
     "align_age",
     "align_sex",
     "convert_icd_codes_to_uris",
-    "split_fr_en"
+    "split_fr_en",
+    "add_id_to_sex"
 
 ]
