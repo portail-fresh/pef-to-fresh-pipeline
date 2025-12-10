@@ -41,6 +41,7 @@ from .add_id_to_sex import add_id_to_sex
 from .add_id_to_age import add_id_to_age
 from .add_id_to_dataaccess import add_id_to_dataaccess
 from .add_id_to_healthspecs import add_id_to_healthspecs
+from .add_recruitment_timing import add_recruitment_timing
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -89,5 +90,6 @@ __all__ = [
     "add_id_to_age",
     "add_id_to_dataaccess",
     "add_id_to_healthspecs",
+    "add_recruitment_timing"
 
 ]

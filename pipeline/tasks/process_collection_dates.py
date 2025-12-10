@@ -8,14 +8,10 @@ logger = logging.getLogger(__name__)
 
 def process_collection_dates(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
-    Processes year elements in an XML file and logs any transformations into a structured changelog.
-
-    Args:
-        xml_file (str): The name of the XML file to process.
-        input_folder (str): The directory containing the XML file.
-        output_folder (str): The directory where the processed XML file will be saved.
-        context (PipelineContext, optional): Shared context object containing changelog and other runtime data.
+    Processes year elements in an XML file, normalizing dates and adding '-01-01'
+    as default month/day, logging any transformations into a structured changelog.
     """
+
     try:
         logger.info("Processing collection years in XML file: %s", xml_file)
         file_path = join(input_folder, xml_file)
@@ -31,7 +27,8 @@ def process_collection_dates(xml_file: str, input_folder: str, output_folder: st
             'pas de date de fin', 'indéterminée', 'Etude ouverte longitudinale',
             'Indéterminé', 'Toujours actif', 'en cours',
             'ongoing', 'ouvert', 'undetermined', 'No completion date',
-            'Open-longitudinal study', 'NA', 'Always active', 'Collection in progress', 'on-going', 'in progress'
+            'Open-longitudinal study', 'NA', 'Always active', 'Collection in progress',
+            'on-going', 'in progress'
         ]
 
         UNPARSED_DATES_DICT = {
@@ -73,8 +70,13 @@ def process_collection_dates(xml_file: str, input_folder: str, output_folder: st
         }
 
         def parse_year(date_text):
+            """Parses any date and returns the year as a string."""
             try:
-                parsed_date = dateutil.parser.parse(date_text, default=datetime(1970, 1, 1), fuzzy=False)
+                parsed_date = dateutil.parser.parse(
+                    date_text,
+                    default=datetime(1970, 1, 1),
+                    fuzzy=False
+                )
                 return str(parsed_date.year)
             except ValueError:
                 return None
@@ -87,27 +89,42 @@ def process_collection_dates(xml_file: str, input_folder: str, output_folder: st
 
         for element in YEAR_ELEMENTS:
             for el in root.xpath(f"//{element}"):
+
                 if el.text is None:
                     continue
 
                 original_text = el.text.strip()
 
+                # Remove ongoing collection markers
                 if contains_any_substring(original_text, COLL_ONGOING_TOKENS):
                     if changelog:
                         changelog.log_delete(task_name, field=element, old_value=original_text)
                     el.getparent().remove(el)
                     continue
 
+                # Try parsing
                 converted_year = parse_year(original_text)
+
+                # Try manual dictionary fallback
                 if converted_year is None:
                     converted_year = UNPARSED_DATES_DICT.get(original_text)
-                    if converted_year is None:
-                        raise ValueError(f"Unrecognized date format: '{original_text}'")
 
-                if original_text != converted_year:
+                # Still not recognized → error
+                if converted_year is None:
+                    raise ValueError(f"Unrecognized date format: '{original_text}'")
+
+                # Final formatted date
+                final_date = f"{converted_year}-01-01"
+
+                if original_text != final_date:
                     if changelog:
-                        changelog.log_update(task_name, field=element, old_value=original_text, new_value=converted_year)
-                    el.text = converted_year
+                        changelog.log_update(
+                            task_name,
+                            field=element,
+                            old_value=original_text,
+                            new_value=final_date
+                        )
+                    el.text = final_date
 
         output_file_path = join(output_folder, xml_file)
         tree.write(output_file_path, encoding="UTF-8", xml_declaration=True, pretty_print=True)
@@ -116,6 +133,7 @@ def process_collection_dates(xml_file: str, input_folder: str, output_folder: st
     except ValueError as ve:
         logger.error("Date parsing error in file %s: %s", xml_file, ve)
         raise
+
     except Exception as e:
         logger.error("An unexpected error occurred while processing the file %s: %s", xml_file, e)
         raise
