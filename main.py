@@ -84,20 +84,6 @@ def run_pipeline():
         
         #(split_fr_en, {})
     ]
-
-    tasks = [
-        (add_metadata_contributor,{}),
-        (add_third_party_source,{}),
-        (update_fundings,{}),
-        (update_sponsor,{}),
-        (add_sampling_procedure,{}),
-        (add_parent_category,{}),
-        (convert_icd_codes_to_uris, {}),
-        (remove_duplicate_empty, {}),
-        
-        #(split_fr_en, {})
-    ]
-   
     
 
     current_input_folder = Path(run_context.get_original_folder())
