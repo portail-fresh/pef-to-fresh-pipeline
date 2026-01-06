@@ -5,10 +5,10 @@ from pipeline.utils.FieldTransformer import FieldTransformer
 def update_population_types(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
     Aligns population type values in the given XML file by applying general field
-    replacements defined in 'data-types-regles-migration.xlsx'. 
+    replacements defined in 'population-types-regles-migration.xlsx'. 
 
     This task replaces PEF values with their corresponding FReSH values 
-    inside <TypeDonneesRecueilliesFR> nodes.
+    inside <PopulationFR> nodes.
 
     Args:
         xml_file (str): Name of the XML file to process.
@@ -80,7 +80,7 @@ def update_population_types(xml_file: str, input_folder: str, output_folder: str
         updated_tree.write(str(output_path), pretty_print=True, encoding="utf-8", xml_declaration=True)
 
         if logger:
-            logger.info("Successfully aligned data types and saved: %s", output_path)
+            logger.info("Successfully aligned population types and saved: %s", output_path)
 
     except Exception as e:
         logger = context.get_logger() if context else None
