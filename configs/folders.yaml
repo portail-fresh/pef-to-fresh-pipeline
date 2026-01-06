@@ -1,4 +1,4 @@
-input_files_folder: files/grospef
+input_files_folder: files/33-add_authorizing_agency
 runs_folder: files/runs
 conversion_tables_folder: files/conversion-tables
 xslt_files_folder: pipeline/xslt-files

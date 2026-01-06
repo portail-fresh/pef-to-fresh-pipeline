@@ -40,10 +40,18 @@ def add_provenance(xml_file: str, input_folder: str, output_folder: str, context
 
         # Define tag
         tag_prov = f"{{{FRESH_NAMESPACE_URI}}}Provenance"
+        
+        ns={}
+        ns["fresh"] = FRESH_NAMESPACE_URI
+        for elem in root.xpath(".//fresh:Provenance", namespaces=ns):
+            parent = elem.getparent()
+            if parent is not None:
+                parent.remove(elem)
+                
 
         # Create and append <fresh:Provenance>
         elem_prov = etree.Element(tag_prov, nsmap=nsmap)
-        elem_prov.text = "PEF"
+        elem_prov.text = "Portail Épidémiologie France"
         root.append(elem_prov)
 
         if logger:

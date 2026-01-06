@@ -62,7 +62,7 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
 
         # Get Excel mapping path
         tables_folder = context.get_conversion_tables_folder()
-        excel_path = join(tables_folder, 'Contacts_arricchito_pids.xlsx')
+        excel_path = join(tables_folder, 'ContatsID_affiliation.xlsx')
 
         # --- STEP 2: load Excel and filter rows ---
         df = pd.read_excel(excel_path, dtype=str).fillna("")
@@ -79,19 +79,11 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
 
         for _, row in df_file.iterrows():
             role = _clean_value(row["Role"])
-            name = _clean_value(row["Prénom"])
-            surname = _clean_value(row["Nom"])
-            name = name +";"+surname
+            name = _clean_value(row["Prénom Nom"])
             mail = _clean_value(row["Mail"])
             orcid = _clean_value(row.get("OrcidFinal", ""))
             idref = _clean_value(row.get("IdRefFinal", ""))
-            rnsr = _clean_value(row.get("RNSR", ""))
-            ror = _clean_value(row.get("ROR", ""))
-            siren = _clean_value(row.get("SIREN_DEF", ""))
-            affiliation = _clean_value(row.get("OrganismeNorm", "")) 
-            laboratoire = _clean_value(row.get("LaboratoireNorm", ""))
-            
-
+            affiliation = _clean_value(row.get("Organisme", "")) or _clean_value(row.get("Laboratoire", ""))
 
             # === PrimaryInvestigator / Contributor ===
             if role == "PI":
@@ -104,11 +96,6 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                 name_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}ContributorName")
                 name_elem.text = name
                 contact_elem.append(name_elem)
-                
-            if mail:
-                mail_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}mail")
-                mail_elem.text = mail
-                contact_elem.append(mail_elem)
 
             # --- add Affiliation if available ---
             if affiliation:
@@ -118,7 +105,7 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
 
             # Add PersonPID(s)
             if orcid:
-                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PiID")
+                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PersonPID")
                 uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
                 uri_elem.text = orcid
                 schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
@@ -127,50 +114,13 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                 contact_elem.append(pid_elem)
 
             if idref:
-                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PiID")
+                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PersonPID")
                 uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
                 uri_elem.text = idref
                 schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
                 schema_elem.text = "IdRef"
                 pid_elem.extend([uri_elem, schema_elem])
                 contact_elem.append(pid_elem)
-                
-            if ror:
-                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}OrganisationID")
-                uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
-                uri_elem.text = ror
-                schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                schema_elem.text = "ROR"
-                pid_elem.extend([uri_elem, schema_elem])
-                contact_elem.append(pid_elem)
-                
-            if siren:
-                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}OrganisationID")
-                uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
-                uri_elem.text = siren
-                schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                schema_elem.text = "SIRENE"
-                pid_elem.extend([uri_elem, schema_elem])
-                contact_elem.append(pid_elem)
-
-            if rnsr:
-                pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}LaboID")
-                uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
-                uri_elem.text = rnsr
-                schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                schema_elem.text = "RNSR"
-                pid_elem.extend([uri_elem, schema_elem])
-                contact_elem.append(pid_elem)
-                
-            if laboratoire:
-                labo_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PILabo")
-                labo_elem.text = laboratoire
-                contact_elem.append(labo_elem)
-                
-            if mail:
-                isc_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}isContact")
-                isc_elem.text = "true"
-                contact_elem.append(isc_elem)
 
             # Append new contact to root
             root.append(contact_elem)
@@ -193,24 +143,6 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                     cp_aff = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}Affiliation")
                     cp_aff.text = affiliation
                     cp_elem.append(cp_aff)
-                    
-                if ror:
-                    pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}OrganisationID")
-                    uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
-                    uri_elem.text = ror
-                    schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                    schema_elem.text = "ROR"
-                    pid_elem.extend([uri_elem, schema_elem])
-                    cp_elem.append(pid_elem)
-                    
-                if siren:
-                    pid_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}OrganisationID")
-                    uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
-                    uri_elem.text = siren
-                    schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                    schema_elem.text = "SIRENE"
-                    pid_elem.extend([uri_elem, schema_elem])
-                    cp_elem.append(pid_elem)
 
                 root.append(cp_elem)
 

@@ -44,20 +44,26 @@ def run_pipeline():
         (correct_special_characters_optional, {}),
         (process_collection_dates, {}),
         (update_regions, {}),
+        (add_related_documents,{}),
         (align_health_determinants, {}),
         (align_biobank_content, {}),
         (align_data_types, {}),
         (align_sex,{}),
+        (add_id_to_sex,{}),
         (align_age,{}),
+        (add_id_to_age,{}),
         (align_health_specs, {}),
+        (add_id_to_healthspecs,{}),
         (update_recruitment_sources, {}),
         (update_population_types, {}),
         (update_study_categories, {}),
+        (add_recruitment_timing,{}),
         (update_study_status,{}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
         (process_inclusion_criteria, {}),
         (dispatch_data_access, {}),
+        (add_id_to_dataaccess,{}),
         (update_contacts, {}),
         (add_collection_mode_categories, {}),
         (add_rare_diseases,{}),
@@ -78,17 +84,19 @@ def run_pipeline():
         
         #(split_fr_en, {})
     ]
-    
-    tasks = [
-        (correct_special_characters, {}),
-        (update_study_categories, {}),
-        (add_recruitment_timing, {}),
 
-      
+    tasks = [
+        (add_metadata_contributor,{}),
+        (add_third_party_source,{}),
+        (update_fundings,{}),
+        (update_sponsor,{}),
+        (add_sampling_procedure,{}),
+        (add_parent_category,{}),
+        (convert_icd_codes_to_uris, {}),
+        (remove_duplicate_empty, {}),
         
         #(split_fr_en, {})
     ]
-    
    
     
 

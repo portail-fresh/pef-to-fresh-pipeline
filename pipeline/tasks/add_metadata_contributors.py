@@ -1,6 +1,9 @@
 from pathlib import Path
 from lxml import etree
+import os
 from pipeline.utils.FieldTransformer import FieldTransformer
+
+FRESH_NAMESPACE_URI = "urn:fresh-enrichment:v1"
 
 def add_metadata_contributor(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
@@ -39,11 +42,34 @@ def add_metadata_contributor(xml_file: str, input_folder: str, output_folder: st
             if logger:
                 logger.error("No changelog found for '%s'. Skipping.", xml_file)
             return
+        root=tree.getroot()
+        nsmap = root.nsmap.copy()
+        if "fresh" not in nsmap:
+            nsmap["fresh"] = FRESH_NAMESPACE_URI
+            
+        ns={}
+        ns["fresh"] = FRESH_NAMESPACE_URI
+        
+        for elem in root.xpath(".//fresh:MetadataContributorName", namespaces=ns):
+            parent = elem.getparent()
+            if parent is not None:
+                parent.remove(elem)
+                
+        for elem in root.xpath(".//fresh:MetadataContributorSurname", namespaces=ns):
+            parent = elem.getparent()
+            if parent is not None:
+                parent.remove(elem)
+                
+        for elem in root.xpath(".//fresh:MetadataContributorAffiliation", namespaces=ns):
+            parent = elem.getparent()
+            if parent is not None:
+                parent.remove(elem)
 
         # file_id non utilizzato in modalità general
         file_id = xml_file.split('_')[0]
 
-        excel_path = "ContributeursID_VF.xlsx"
+        tables_folder = context.get_conversion_tables_folder()
+        excel_path = os.path.join(tables_folder, 'Contributeurs_arricchito_pids.xlsx')
         task_name = "add_metadata_contributor"
 
         transformer = FieldTransformer(
