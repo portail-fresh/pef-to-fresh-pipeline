@@ -152,17 +152,34 @@ Tasks should be added in the `tasks` list as tuples containing the function name
 
 ## Setup and usage
 
- 1. **Install Dependencies**  
+1. **Clone this repository**  
+   Clone the GitHub repository locally using `git`. Make sure you have Git installed on your system, then run:
+
+    ```bash
+    git clone git@github.com:portail-fresh/pef-to-fresh-pipeline.git
+    ```
+
+    After cloning, move into the project directory:
+
+    ```bash
+    cd pef-to-fresh-pipeline/
+    ```
+
+2. **Install Dependencies**  
    Ensure that all required packages are installed. To install the dependencies, create a python venv or a conda env and run:
      ```bash
     pip install -r requirements.txt
     ```
+3. **Prepare Input Data**  
+   - Copy the original PEF XML files in the `files/input-files` folder, or in the path defined in the folders' YAML file.
+   - Copy the Excel conversion table files in the `files/conversion-tables` folder, or in the path defined in the folders' YAML file.
+   - Copy the Excel controlled vocabularies in the `files/vocabularies` folder.
 
-2. **Prepare Input Data**  
-   Place the original XML files to be parsed in the designated input folder, without subfolders. This path is specified in the `configs/folders.yaml` file under the `input_files_folder` key.
 
+4. **Configure API information**  
+   Rename the `configs/api.txt` file into `api.yaml` and configure the API parameters for the ICD API requests.
 
-3. **Run the Pipeline**  
+5. **Run the Pipeline**  
    To execute the main pipeline, run:
    ```bash
    python main.py
@@ -187,4 +204,9 @@ Tasks should be added in the `tasks` list as tuples containing the function name
 - **pipreqs Library**  
   The `pipreqs` library was used to automatically generate a `requirements.txt` file with the dependencies of the project:  
   [https://github.com/bndr/pipreqs](https://github.com/bndr/pipreqs)
+
+- **International Classification of Diseases (ICD) APIs**  
+  ICD APIs v2 was used to retrieve diseases label names and URIs from ICD-11 codes.
+  The documentation of the ICD APIs is available here: 
+  [https://icd.who.int/docs/icd-api/APIDoc-Version2/](https://icd.who.int/docs/icd-api/APIDoc-Version2/). An OpenAPI Swagger interface of the APIs is available here: [https://id.who.int/swagger/index.html](https://id.who.int/swagger/index.html)
 

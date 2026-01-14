@@ -4,9 +4,7 @@ from pipeline.utils.FieldTransformer import FieldTransformer
 
 def add_pathologies(xml_file: str, input_folder: str, output_folder: str, context=None):
     """
-    Applies general field replacements for biobank content in the given XML file
-    using 'align-biobank-content-en.xlsx' as mapping table. This replaces PEF values
-    with FReSH values inside <ContenuBiothequeFR> nodes.
+    Applies CIM-11 codes for pathologies.
 
     Args:
         xml_file (str): XML file name.

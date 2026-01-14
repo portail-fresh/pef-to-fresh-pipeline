@@ -1,2 +1,3 @@
-nada-api-key: abcdefg1234567890
-nada-api-host: http://0.0.0.0:0000
+icd-client-id: 3gg343c-634gg3428
+icd-client-secret: 3432423342=
+icd-token-endpoint: https://example.com
