@@ -156,7 +156,12 @@ Tasks should be added in the `tasks` list as tuples containing the function name
    Clone the GitHub repository locally using `git`. Make sure you have Git installed on your system, then run:
 
     ```bash
-    git clone git@github.com:portail-fresh/pef-to-fresh-pipeline.git
+
+    # via SSH
+    git clone git@github.com:portail-fresh/pef-to-fresh-pipeline.git 
+
+    # or via HTTPS
+    git clone https://github.com/portail-fresh/pef-to-fresh-pipeline.git 
     ```
 
     After cloning, move into the project directory:
