@@ -28,7 +28,7 @@ Retrieves a list of XML files from a specified folder, excluding files whose IDs
 
 ## How it works
 
-1. Reads the Excel file `files/utility-files/id-fiches-exclus-fresh.xlsx` to obtain a list of IDs to exclude.
+1. Reads the Excel file `public/utility-files/id-fiches-exclus-fresh.xlsx` to obtain a list of IDs to exclude.
 2. Lists all files in the specified folder.
 3. Filters files to include only:
    - Files ending with `.xml`.

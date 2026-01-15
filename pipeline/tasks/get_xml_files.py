@@ -25,7 +25,7 @@ def get_xml_files(folder: str, context: PipelineContext):
         logger.info("Retrieving XML files from folder: %s", folder)
 
         # Read the Excel file with the list of IDs to exclude
-        exclusion_path = join("files", "utility-files", "id-fiches-exclus-fresh.xlsx")
+        exclusion_path = join("public", "utility-files", "id-fiches-exclus-fresh.xlsx")
         df = pd.read_excel(exclusion_path)
 
         # Extract the list of IDs to exclude (as strings, to match filename format)

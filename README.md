@@ -184,7 +184,9 @@ Tasks should be added in the `tasks` list as tuples containing the function name
    ```bash
    python main.py
    ```
-
+6. **Results**  
+   The results of every step of the pipeline run will be available in a timestamped subfolder of the `files/runs` directory. The resulting XML files are stored in the `outputs` subfolder, while the changelog files are stored in the `changelogs` subfolder.
+   
 
 
 ## References
