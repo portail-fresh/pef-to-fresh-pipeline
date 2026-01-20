@@ -78,7 +78,7 @@ def update_sponsor(xml_file: str, input_folder: str, output_folder: str, context
                 if row["SIRET"]:
                     pid_el = make_elem("SponsorPID")
                     pid_el.append(make_elem("URL", row["SIRET"]))
-                    pid_el.append(make_elem("PIDSchema", "SIRET"))
+                    pid_el.append(make_elem("PIDSchema", "SIREN"))
                     sponsor_el.append(pid_el)
 
                 # aggiungi sponsor al root
@@ -94,7 +94,7 @@ def update_sponsor(xml_file: str, input_folder: str, output_folder: str, context
                             "SponsorTypeFR": row["SponsorType_fr"],
                             "SponsorTypeEN": row["SponsorType_en"],
                             "ROR": row["ROR"] if row["ROR"] else None,
-                            "SIRET": row["SIRET"] if row["SIRET"] else None,
+                            "SIREN": row["SIRET"] if row["SIRET"] else None,
                         },
                     )
 

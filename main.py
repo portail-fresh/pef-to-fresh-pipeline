@@ -4,7 +4,9 @@ from pipeline.tasks import *
 from pipeline.utils.PipelineContext import PipelineContext
 
 
-def execute_task(task, xml_file, input_folder=None, output_folder=None, context=None, **kwargs):
+def execute_task(
+    task, xml_file, input_folder=None, output_folder=None, context=None, **kwargs
+):
     """
     Executes a task function with the appropriate parameters based on its signature.
     Only passes arguments that the task function explicitly accepts.
@@ -12,14 +14,14 @@ def execute_task(task, xml_file, input_folder=None, output_folder=None, context=
     sig = inspect.signature(task)
     task_args = {}
 
-    if 'xml_file' in sig.parameters:
-        task_args['xml_file'] = xml_file
-    if 'input_folder' in sig.parameters:
-        task_args['input_folder'] = input_folder
-    if 'output_folder' in sig.parameters:
-        task_args['output_folder'] = output_folder
-    if 'context' in sig.parameters:
-        task_args['context'] = context
+    if "xml_file" in sig.parameters:
+        task_args["xml_file"] = xml_file
+    if "input_folder" in sig.parameters:
+        task_args["input_folder"] = input_folder
+    if "output_folder" in sig.parameters:
+        task_args["output_folder"] = output_folder
+    if "context" in sig.parameters:
+        task_args["context"] = context
 
     # Add any additional keyword arguments allowed by the task
     for k, v in kwargs.items():
@@ -35,56 +37,62 @@ def run_pipeline():
     """
     # Initialize the pipeline context
     run_context = PipelineContext()
-    logger=run_context.get_logger()
+    logger = run_context.get_logger()
     logger.info("Starting XML Modification Flow")
 
-    
     tasks = [
         (correct_special_characters, {}),
         (correct_special_characters_optional, {}),
         (process_collection_dates, {}),
         (update_regions, {}),
-        (add_related_documents,{}),
+        (add_related_documents, {}),
         (align_health_determinants, {}),
         (align_biobank_content, {}),
         (align_data_types, {}),
-        (align_sex,{}),
-        (add_id_to_sex,{}),
-        (align_age,{}),
-        (add_id_to_age,{}),
+        (align_sex, {}),
+        (add_id_to_sex, {}),
+        (align_age, {}),
+        (add_id_to_age, {}),
         (align_health_specs, {}),
-        (add_id_to_healthspecs,{}),
+        (add_id_to_healthspecs, {}),
         (update_recruitment_sources, {}),
         (update_population_types, {}),
         (update_study_categories, {}),
-        (add_recruitment_timing,{}),
-        (update_study_status,{}),
+        (add_recruitment_timing, {}),
+        (update_study_status, {}),
         (add_fresh_enrichment_namespace, {}),
         (add_fresh_identifier, {}),
         (process_inclusion_criteria, {}),
         (dispatch_data_access, {}),
-        (add_id_to_dataaccess,{}),
+        (add_id_to_dataaccess, {}),
         (update_contacts, {}),
         (add_collection_mode_categories, {}),
-        (add_rare_diseases,{}),
+        (add_rare_diseases, {}),
         (add_nct_identifier, {}),
-        (add_research_type,{}),
+        (add_research_type, {}),
         (add_provenance, {}),
         (add_pathologies, {}),
-        (add_nations,{}),
-        (add_authorizing_agency,{}),
-        (add_metadata_contributor,{}),
-        (add_third_party_source,{}),
-        (update_fundings,{}),
-        (update_sponsor,{}),
-        (add_sampling_procedure,{}),
-        (add_parent_category,{}),
+        (add_nations, {}),
+        (add_authorizing_agency, {}),
+        (add_metadata_contributor, {}),
+        (add_third_party_source, {}),
+        (update_fundings, {}),
+        (update_sponsor, {}),
+        (add_sampling_procedure, {}),
+        (add_parent_category, {}),
         (convert_icd_codes_to_uris, {}),
+        (delete_health_specs, {}),
         (remove_duplicate_empty, {}),
-        
-        #(split_fr_en, {})
+        # (split_fr_en, {})
     ]
-    
+
+    tasks = [
+        (correct_special_characters, {}),
+        (align_health_specs, {}),
+        (add_id_to_healthspecs, {}),
+        (delete_health_specs, {}),
+        (remove_duplicate_empty, {}),
+    ]
 
     current_input_folder = Path(run_context.get_original_folder())
 
@@ -94,7 +102,7 @@ def run_pipeline():
         # Each task writes to its own subfolder inside outputs/
         current_output_folder = (
             run_context.get_outputs_dir() / task_name
-            if 'output_folder' in task.__code__.co_varnames
+            if "output_folder" in task.__code__.co_varnames
             else None
         )
 
@@ -114,13 +122,12 @@ def run_pipeline():
                 input_folder=current_input_folder,
                 output_folder=current_output_folder,
                 context=run_context,
-                **kwargs
+                **kwargs,
             )
 
         # Update input folder for the next task
         if current_output_folder:
             current_input_folder = current_output_folder
-
 
     logger.info("Pipeline execution completed.")
 

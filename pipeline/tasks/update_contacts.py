@@ -149,7 +149,7 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                 uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
                 uri_elem.text = siren
                 schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                schema_elem.text = "SIRENE"
+                schema_elem.text = "SIREN"
                 pid_elem.extend([uri_elem, schema_elem])
                 contact_elem.append(pid_elem)
 
@@ -208,7 +208,7 @@ def update_contacts(xml_file: str, input_folder: str, output_folder: str, contex
                     uri_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}URI")
                     uri_elem.text = siren
                     schema_elem = etree.Element(f"{{{FRESH_NAMESPACE_URI}}}PIDSchema")
-                    schema_elem.text = "SIRENE"
+                    schema_elem.text = "SIREN"
                     pid_elem.extend([uri_elem, schema_elem])
                     cp_elem.append(pid_elem)
 

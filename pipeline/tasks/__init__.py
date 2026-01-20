@@ -43,6 +43,7 @@ from .add_id_to_dataaccess import add_id_to_dataaccess
 from .add_id_to_healthspecs import add_id_to_healthspecs
 from .add_recruitment_timing import add_recruitment_timing
 from .add_related_documents import add_related_documents
+from .delete_health_specs import delete_health_specs
 
 
 # Define __all__ to specify the public API of the tasks module
@@ -93,5 +94,6 @@ __all__ = [
     "add_id_to_healthspecs",
     "add_recruitment_timing",
     "add_related_documents",
+    "delete_health_specs"
 
 ]
