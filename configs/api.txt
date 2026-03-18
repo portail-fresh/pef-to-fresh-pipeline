@@ -1,3 +1,0 @@
-icd-client-id: 3gg343c-634gg3428
-icd-client-secret: 3432423342=
-icd-token-endpoint: https://example.com
