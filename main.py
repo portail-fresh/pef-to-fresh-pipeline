@@ -86,13 +86,13 @@ def run_pipeline():
         # (split_fr_en, {})
     ]
 
-    tasks = [
-        (correct_special_characters, {}),
-        (align_health_specs, {}),
-        (add_id_to_healthspecs, {}),
-        (delete_health_specs, {}),
-        (remove_duplicate_empty, {}),
-    ]
+    # tasks = [
+    #     (correct_special_characters, {}),
+    #     (align_health_specs, {}),
+    #     (add_id_to_healthspecs, {}),
+    #     (delete_health_specs, {}),
+    #     (remove_duplicate_empty, {}),
+    # ]
 
     current_input_folder = Path(run_context.get_original_folder())
 
